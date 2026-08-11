@@ -2,7 +2,7 @@ name: Publicar Artigos
 
 on:
   schedule:
-    - cron: '40 15 */2 * *'  # A cada 2 dias às 15:40 BRT
+    - cron: '0 16 */2 * *'  # A cada 2 dias às 15:40 BRT
   workflow_dispatch:          # Permite rodar manualmente
 
 jobs:
