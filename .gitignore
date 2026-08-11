@@ -1,9 +1,6 @@
 # Arquivos com chaves secretas
 .env
 
-# Pasta de build
-docs/
-
 # Cache do Python
 __pycache__/
 *.pyc
