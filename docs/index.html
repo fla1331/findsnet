@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finds - Um lugar pra quem gosta de economizar.</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #f6b93b;
+        }
+        .logo { font-size: 3rem; margin-bottom: 10px; }
+        h1 { font-size: 1.8rem; color: #0c2461; margin-bottom: 8px; }
+        p { color: #2d3436; margin-bottom: 30px; font-size: 0.95rem; }
+        .lang-options { display: flex; flex-direction: column; gap: 10px; }
+        .lang-option {
+            display: block;
+            padding: 12px 20px;
+            background: #f8f9fa;
+            color: #0c2461;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .lang-option:hover { background: #f6b93b; color: #ffffff; }
+        .lang-option.default { background: #f6b93b; color: #ffffff; }
+        .lang-option.default:hover { background: #e58e26; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var idiomas = ['pt', 'en', 'es'];
+            var lang = (navigator.language || navigator.userLanguage || 'pt').substring(0, 2);
+            if (idiomas.includes(lang)) {
+                window.location.href = '/' + lang + '/';
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">💎</div>
+        <h1>Finds</h1>
+        <p>Ofertas, cupons e produtos que a gente usa e recomenda. Sem exagero.</p>
+        <div class="lang-options">
+            <a href="/pt/" class="lang-option">Português</a>
+<a href="/en/" class="lang-option">English</a>
+<a href="/es/" class="lang-option">Español</a>
+
+        </div>
+    </div>
+</body>
+</html>

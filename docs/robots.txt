@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /assets/
+Disallow: /404.html
+
+Sitemap: https://finds.brightnest.blog/pt/sitemap.xml
+Sitemap: https://finds.brightnest.blog/en/sitemap.xml
+Sitemap: https://finds.brightnest.blog/es/sitemap.xml
