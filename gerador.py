@@ -4007,6 +4007,55 @@ body {{
         print(f"\n📦 PUBLICAR EM LOTES ({idioma.upper()})")
         print("=" * 50)
         
+        # ===== MODO AUTOMÁTICO - PUBLICA TUDO SEM PERGUNTAR =====
+        if auto:
+            print("🤖 Modo automático ativado!")
+            
+            # Sincroniza status
+            self.sincronizar_status(mostrar_confirmacao=False, idioma=idioma)
+            
+            artigos = self.ler_csv(idioma)
+            hoje = datetime.now().strftime("%Y-%m-%d")
+            
+            # Filtra rascunhos com data <= hoje
+            pendentes = []
+            for a in artigos:
+                if a.get('status', 'rascunho').lower() != 'publicado':
+                    data_artigo = a.get('data_publicacao', '')
+                    if data_artigo and data_artigo <= hoje:
+                        pendentes.append(a)
+            
+            if not pendentes:
+                print(f"\n✅ Nenhum artigo pendente para publicar hoje.")
+                return
+            
+            print(f"\n📊 {len(pendentes)} artigos disponíveis para publicar hoje:")
+            for a in pendentes:
+                print(f"   - {a.get('artigo')}")
+            
+            print(f"\n📦 Publicando {len(pendentes)} artigos automaticamente...")
+            print("-" * 40)
+            
+            for i, a in enumerate(pendentes, 1):
+                print(f"\n[{i}/{len(pendentes)}] {a.get('artigo')}")
+                if not a.get('data_publicacao'):
+                    a['data_publicacao'] = datetime.now().strftime("%Y-%m-%d")
+                
+                self.criar_artigo(a, forcar=False, revisar=True, idioma=idioma, forcar_head=False)
+                
+                if i < len(pendentes):
+                    time.sleep(random.randint(2, 5))
+            
+            self.criar_index(idioma=idioma)
+            self.criar_todas_categorias(idioma=idioma)
+            self.criar_sitemap()
+            self.criar_index_raiz()
+            
+            print("\n" + "=" * 40)
+            print(f"✅ {len(pendentes)} artigos publicados!")
+            return
+        
+        # ===== MODO INTERATIVO (continua com o código que já existe) =====
         # Sincroniza status primeiro
         self.sincronizar_status(mostrar_confirmacao=False, idioma=idioma)
         
