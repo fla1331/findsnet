@@ -4544,7 +4544,8 @@ if __name__ == "__main__":
         # Modo automático - não pede interação
         gerador = Gerador()
         gerador.idioma_selecionado = 'pt'
-        gerador.publicar_lotes()
+        gerador.t = IDIOMAS.get('pt', IDIOMAS['pt'])
+        gerador.publicar_lotes(auto=True)  
     else:
         gerador = Gerador()
         gerador.menu()
