@@ -4470,5 +4470,13 @@ body {{
                 input("\nPressione Enter...")
 
 if __name__ == "__main__":
-    gerador = Gerador()
-    gerador.menu()
+    import sys
+    
+    if "--auto" in sys.argv:
+        gerador = Gerador()
+        gerador.idioma_selecionado = 'pt'
+        gerador.t = IDIOMAS.get('pt', IDIOMAS['pt'])
+        gerador.publicar_lotes()
+    else:
+        gerador = Gerador()
+        gerador.menu()
