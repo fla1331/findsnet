@@ -4540,12 +4540,11 @@ body {{
 
 if __name__ == "__main__":
     import sys
-    
-    if "--auto" in sys.argv:
+    if len(sys.argv) > 1 and sys.argv[1] == "--auto":
+        # Modo automático - não pede interação
         gerador = Gerador()
         gerador.idioma_selecionado = 'pt'
-        gerador.t = IDIOMAS.get('pt', IDIOMAS['pt'])
-        gerador.publicar_lotes(auto=True) 
+        gerador.publicar_lotes()
     else:
         gerador = Gerador()
         gerador.menu()

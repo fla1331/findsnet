@@ -29,7 +29,7 @@ jobs:
           echo "PIXABAY_API_KEY=${{ secrets.PIXABAY_API_KEY }}" >> $GITHUB_ENV
       
       - name: Executar o gerador
-        run: python3 gerador.py
+        run: python3 gerador.py --auto
       
       - name: Enviar a pasta docs para o GitHub
         env:
