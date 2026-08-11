@@ -3996,7 +3996,7 @@ body {{
         print("\n✅ Publicado!")
         input("\nPressione Enter...")
     
-    def publicar_lotes(self):
+    def publicar_lotes(self, auto=False):
         """Publica todos os artigos pendentes que já passaram da data de publicação"""
         if self.idioma_selecionado is None:
             print("⚠️ Selecione um idioma primeiro!")
@@ -4496,7 +4496,7 @@ if __name__ == "__main__":
         gerador = Gerador()
         gerador.idioma_selecionado = 'pt'
         gerador.t = IDIOMAS.get('pt', IDIOMAS['pt'])
-        gerador.publicar_lotes()
+        gerador.publicar_lotes(auto=True) 
     else:
         gerador = Gerador()
         gerador.menu()
