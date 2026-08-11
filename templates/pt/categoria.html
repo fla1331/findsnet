@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  {{HEAD}}
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+  
+  {{HEADER}}
+
+  <main id="main" class="main-content">
+    <section class="category-header">
+      <div class="container">
+        <nav aria-label="Breadcrumb">
+          <ol class="breadcrumb" style="justify-content:center;color:rgba(255,255,255,0.8)">
+            <li><a href="/{{IDIOMA}}/" style="color:rgba(255,255,255,0.8)">Início</a></li>
+            <li class="current" style="color:#fff">{{CATEGORIA}}</li>
+          </ol>
+        </nav>
+        <h1>{{CATEGORIA}}</h1>
+        <p>teste1</p>
+      </div>
+    </section>
+
+    <div class="container section">
+      <div class="card-grid">
+        {{ARTIGOS_CATEGORIA}}
+      </div>
+
+      {{NAVEGACAO}}
+    </div>
+  </main>
+
+  {{FOOTER}}
+
+  <div class="cookie-banner" role="dialog" aria-label="Aviso de cookies">
+    <div class="cookie-inner">
+      <p class="cookie-text">Usamos cookies para melhorar sua experiência. Saiba mais em <a href="/{{IDIOMA}}/cookies.html">Política de Cookies</a>.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost btn-sm cookie-customize">Personalizar</button>
+        <button class="btn btn-ghost btn-sm cookie-reject">Rejeitar</button>
+        <button class="btn btn-primary btn-sm cookie-accept">Aceitar todos</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/script.js"></script>
+</body>
+</html>
