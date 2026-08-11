@@ -3997,22 +3997,37 @@ body {{
         input("\nPressione Enter...")
     
     def publicar_lotes(self):
+        """Publica todos os artigos pendentes que já passaram da data de publicação"""
         if self.idioma_selecionado is None:
             print("⚠️ Selecione um idioma primeiro!")
             return
         
         idioma = self.idioma_selecionado
+        
         print(f"\n📦 PUBLICAR EM LOTES ({idioma.upper()})")
         print("=" * 50)
         
+        # Sincroniza status primeiro
+        self.sincronizar_status(mostrar_confirmacao=False, idioma=idioma)
+        
         artigos = self.ler_csv(idioma)
-        pendentes = [a for a in artigos if a.get('status', 'rascunho').lower() != 'publicado']
+        
+        # Filtra apenas rascunhos com data <= hoje
+        hoje = datetime.now().strftime("%Y-%m-%d")
+        
+        pendentes = []
+        for a in artigos:
+            if a.get('status', 'rascunho').lower() != 'publicado':
+                data_artigo = a.get('data_publicacao', '')
+                if data_artigo and data_artigo <= hoje:
+                    pendentes.append(a)
         
         if not pendentes:
-            print(f"✅ Nenhum artigo pendente")
+            print(f"\n✅ Nenhum artigo pendente para publicar hoje.")
             input("\nPressione Enter...")
             return
         
+        # Agrupa por categoria
         categorias = {}
         for a in pendentes:
             cat = a.get('categoria', 'geral')
@@ -4020,8 +4035,9 @@ body {{
                 categorias[cat] = []
             categorias[cat].append(a)
         
-        print(f"\n📊 {len(pendentes)} artigos disponíveis")
-        print("\n📂 CATEGORIAS:")
+        print(f"\n📊 {len(pendentes)} artigos disponíveis para publicar hoje:")
+        
+        # Mostra os artigos
         cats = list(categorias.keys())
         for i, cat in enumerate(cats, 1):
             titulo = self.get_nome_categoria_traduzido(cat, idioma)
@@ -4073,9 +4089,13 @@ body {{
         
         for i, a in enumerate(publicar_agora, 1):
             print(f"\n[{i}/{len(publicar_agora)}] {a.get('artigo')}")
-            data_pub = (datetime.now() + timedelta(days=i-1)).strftime("%Y-%m-%d")
-            a['data_publicacao'] = data_pub
-            self.criar_artigo(a, revisar=True, idioma=idioma, forcar_head=False)
+            
+            # Se não tiver data, usa a data atual
+            if not a.get('data_publicacao'):
+                a['data_publicacao'] = datetime.now().strftime("%Y-%m-%d")
+            
+            self.criar_artigo(a, forcar=False, revisar=True, idioma=idioma, forcar_head=False)
+            
             if i < len(publicar_agora):
                 time.sleep(random.randint(2, 5))
         
