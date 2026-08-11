@@ -1,9 +1,0 @@
-{
-  "name": "saude-longevidade-blog",
-  "private": true,
-  "version": "1.0.0",
-  "description": "Blog estático de Saúde, Longevidade e Receitas Saudáveis (HTML + CSS + JS puro).",
-  "scripts": {
-    "build": "node -e \"const fs=require('fs');const files=['index.html','categoria.html','artigo.html','style.css','script.js'];const missing=files.filter(f=>!fs.existsSync(f));if(missing.length){console.error('Arquivos ausentes:',missing.join(', '));process.exit(1);}console.log('Build OK — arquivos presentes: '+files.join(', '));\""
-  }
-}

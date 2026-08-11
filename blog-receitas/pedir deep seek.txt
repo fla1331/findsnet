@@ -1,5 +1,0 @@
-1 - Aqui está o HTML revisado e significativamente melhorado:
-2 - um <br> após o <article class="container article-body">
-      <!-- CONTEUDO_INICIO -->
-
-    <h1>Alimentação Antienvelhecimento: O Guia Científico para Viver Mais e Melhor</h1> <br>
