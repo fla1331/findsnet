@@ -2573,7 +2573,7 @@ body {{
                 nome_rel = nome_traduzido if nome_traduzido else a['nome']
             else:
                 nome_rel = a['nome']
-            relacionados_sidebar += f'<li><a href="/{idioma}/{cat_traduzida}/{a['slug']}/">{nome_rel}</a></li>\n'
+            relacionados_sidebar += f'<li><a href="/{idioma}/{cat_traduzida}/{a["slug"]}/">{nome_rel}</a></li>\n'
         
         # ============================================================
         # SIDEBAR - CATEGORIAS
