@@ -1,0 +1,19 @@
+Crie um GUIA COMPLETO E DETALHADO sobre {artigo} em português do Brasil.
+
+NICHO: {categoria}
+TOM: {tom}
+PALAVRAS-CHAVE: {palavras_chave}
+
+ESTRUTURA OBRIGATÓRIA (GUIA):
+1. Título chamativo com <h1>
+2. INTRODUÇÃO (3-4 parágrafos) - o que você vai aprender
+3. CAPÍTULO 1: O BÁSICO - conceitos fundamentais
+4. CAPÍTULO 2: PASSO A PASSO - processo detalhado
+5. CAPÍTULO 3: DICAS AVANÇADAS - para quem quer mais
+6. TABELA com informações úteis
+7. ERROS COMUNS E COMO EVITAR
+8. FAQ com <div class="faq"> e <div class="faq-item">
+9. CONCLUSÃO - próximos passos
+
+Use classes: article-table, faq, faq-item
+Retorne APENAS HTML válido.

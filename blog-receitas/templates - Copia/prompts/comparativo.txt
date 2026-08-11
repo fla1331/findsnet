@@ -1,0 +1,20 @@
+Crie um COMPARATIVO DETALHADO sobre {artigo} em português do Brasil.
+
+NICHO: {categoria}
+TOM: {tom}
+PALAVRAS-CHAVE: {palavras_chave}
+
+ESTRUTURA OBRIGATÓRIA (COMPARATIVO):
+
+1. Título chamativo com <h1> - ex: "Produto A vs Produto B: Qual Escolher?"
+2. INTRODUÇÃO (3-4 parágrafos) - o que está sendo comparado
+3. PRODUTO A - descrição detalhada, prós, contras, preço
+4. PRODUTO B - descrição detalhada, prós, contras, preço
+5. TABELA COMPARATIVA com <table class="article-table">
+6. ANÁLISE - qual escolher e para qual perfil
+7. Veredito Final - recomendação clara
+8. FAQ com <div class="faq"> e <div class="faq-item">
+9. CTA com <div class="cta-box"> e link: {link}
+
+Use classes: article-table, faq, faq-item, cta-box, btn-primary
+Retorne APENAS HTML válido.

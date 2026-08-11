@@ -1,0 +1,20 @@
+Crie um ARTIGO INFORMATIVO COMPLETO sobre {artigo} em português do Brasil.
+
+NICHO: {categoria}
+TOM: {tom}
+PALAVRAS-CHAVE: {palavras_chave}
+
+ESTRUTURA OBRIGATÓRIA (ARTIGO):
+1. Título chamativo com <h1>
+2. INTRODUÇÃO (3-4 parágrafos) - apresente o tema
+3. CONTEXTO E FUNDAMENTOS - base teórica
+4. PRINCIPAIS ASPECTOS - divida em subtópicos com <h2>
+5. APLICAÇÕES PRÁTICAS - como aplicar no dia a dia
+6. BENEFÍCIOS - lista com <ul>
+7. TABELA com informações organizadas
+8. TENDÊNCIAS E FUTURO - para onde o tema está caminhando
+9. FAQ com <div class="faq"> e <div class="faq-item">
+10. CONCLUSÃO - resumo e próximos passos
+
+Use classes: article-table, faq, faq-item
+Retorne APENAS HTML válido.

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categoria — Saúde & Longevidade</title>
+    <meta name="description" content="Página de categoria do blog Saúde & Longevidade." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ============ HEADER ============ -->
+    <header class="site-header" id="siteHeader">
+      <div class="container header-inner">
+        <a href="index.html" class="logo">
+          <span class="logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+              <path d="M2 21c0-3 1.85-5.36 5.08-6"/>
+            </svg>
+          </span>
+          <span class="logo-text">
+            <span class="logo-name">Saúde & Longevidade</span>
+            <span class="logo-tag">Receitas & Bem-Estar</span>
+          </span>
+        </a>
+
+        <nav class="nav" id="nav" aria-label="Menu principal">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="categoria.html?cat=receitas" class="nav-link">Receitas</a>
+          <a href="categoria.html?cat=nutricao" class="nav-link">Nutrição</a>
+          <a href="categoria.html?cat=longevidade" class="nav-link">Longevidade</a>
+          <a href="categoria.html?cat=bem-estar" class="nav-link">Bem-Estar</a>
+          <a href="sobre.html" class="nav-link">Sobre</a>
+          <a href="contato.html" class="nav-link">Contato</a>
+        </nav>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ CATEGORY HEADER ============ -->
+      <header class="category-header">
+        <div class="container">
+          <span class="eyebrow eyebrow--center">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+            <!-- CATEGORIA: NOME -->
+            {{CATEGORIA}}
+          </span>
+          <h1 class="category-title" id="categoryTitle">Receitas Saudáveis</h1>
+          <p class="category-desc" id="categoryDesc">Pratos que unem sabor e cuidado — para comer bem em qualquer refeição.</p>
+        </div>
+      </header>
+
+      <!-- ============ GRID ============ -->
+      <section class="container category-grid">
+        <!-- CARD 1 -->
+        <article class="card">
+          <a href="artigo.html" class="card-media">
+            <img src="https://images.pexels.com/photos/1437629/pexels-photo-1437629.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Overnight oats de mirtilo" loading="lazy" />
+            <span class="badge badge--recipe">Receitas</span>
+          </a>
+          <div class="card-body">
+            <p class="card-meta"><time>18 jul 2026</time> · 4 min</p>
+            <h3 class="card-title"><a href="artigo.html">Overnight Oats de Mirtilo e Chia</a></h3>
+            <p class="card-excerpt">Misture os ingredientes na noite anterior e acorde com um café da manhã nutritivo.</p>
+            <a href="artigo.html" class="card-link">Ler mais →</a>
+          </div>
+        </article>
+
+        <!-- CARD 2 -->
+        <article class="card">
+          <a href="artigo.html" class="card-media">
+            <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Bowl de quinoa" loading="lazy" />
+            <span class="badge badge--recipe">Receitas</span>
+          </a>
+          <div class="card-body">
+            <p class="card-meta"><time>16 jul 2026</time> · 6 min</p>
+            <h3 class="card-title"><a href="artigo.html">Bowl de Quinoa com Legumes Assados</a></h3>
+            <p class="card-excerpt">Uma refeição completa em uma tigela: proteína vegetal, fibras e cor.</p>
+            <a href="artigo.html" class="card-link">Ler mais →</a>
+          </div>
+        </article>
+
+        <!-- CARD 3 -->
+        <article class="card">
+          <a href="artigo.html" class="card-media">
+            <img src="https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Sopa de abóbora" loading="lazy" />
+            <span class="badge badge--recipe">Receitas</span>
+          </a>
+          <div class="card-body">
+            <p class="card-meta"><time>14 jul 2026</time> · 5 min</p>
+            <h3 class="card-title"><a href="artigo.html">Sopa de Abóbora com Gengibre</a></h3>
+            <p class="card-excerpt">Cremosa, levemente picante e pronta em 30 minutos.</p>
+            <a href="artigo.html" class="card-link">Ler mais →</a>
+          </div>
+        </article>
+
+        <!-- CARD 4 -->
+        <article class="card">
+          <a href="artigo.html" class="card-media">
+            <img src="https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Mesa mediterrânea" loading="lazy" />
+            <span class="badge badge--recipe">Receitas</span>
+          </a>
+          <div class="card-body">
+            <p class="card-meta"><time>9 jul 2026</time> · 6 min</p>
+            <h3 class="card-title"><a href="artigo.html">Salada Mediterrânea com Grão-de-Bico</a></h3>
+            <p class="card-excerpt">Cores, texturas e o melhor da cozinha do sul da Europa.</p>
+            <a href="artigo.html" class="card-link">Ler mais →</a>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo logo--light">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+            </span>
+            <span class="logo-name">Saúde & Longevidade</span>
+          </a>
+          <p class="footer-text">Receitas que curam, hábitos que transformam. Um espaço para comer com prazer e viver com equilíbrio.</p>
+          <div class="social">
+            <a href="#" aria-label="Instagram" class="social-link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37Z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+            <a href="#" aria-label="YouTube" class="social-link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a2.5 2.5 0 0 0 2.5 2.5h14A2.5 2.5 0 0 0 21.5 17V7a2.5 2.5 0 0 0-2.5-2.5H5A2.5 2.5 0 0 0 2.5 7Z"/><path d="m10 15 5-3-5-3z"/></svg></a>
+            <a href="#" aria-label="Facebook" class="social-link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-title">Explorar</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="categoria.html?cat=receitas">Receitas</a></li>
+            <li><a href="categoria.html?cat=bem-estar">Bem-Estar</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-title">Institucional</h4>
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="#">Política de Privacidade</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-title">Créditos</h4>
+          <p class="footer-text">Fotografias: Pexels. Tipografia: Inter & Playfair Display.</p>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p>© <span id="year">2026</span> Saúde & Longevidade. Todos os direitos reservados.</p>
+        <p>Conteúdo informativo — não substitui acompanhamento profissional.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

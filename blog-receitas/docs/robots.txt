@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /assets/
+Disallow: /404.html
+
+Sitemap: https://healthtable.brightnest.blog/pt/sitemap.xml
+Sitemap: https://healthtable.brightnest.blog/en/sitemap.xml
+Sitemap: https://healthtable.brightnest.blog/es/sitemap.xml

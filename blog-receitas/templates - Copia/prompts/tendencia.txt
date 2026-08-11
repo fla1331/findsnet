@@ -1,0 +1,20 @@
+Crie uma ANÁLISE DE TENDÊNCIA sobre {artigo} em português do Brasil.
+
+NICHO: {categoria}
+TOM: {tom}
+PALAVRAS-CHAVE: {palavras_chave}
+
+ESTRUTURA OBRIGATÓRIA (TENDÊNCIA):
+
+1. Título chamativo com <h1> - ex: "{artigo}: A Nova Tendência em {categoria}"
+2. INTRODUÇÃO (3-4 parágrafos) - o que está mudando no setor
+3. O QUE ESTÁ ACONTECENDO - a tendência em detalhes
+4. POR QUE ESTÁ ACONTECENDO - fatores que impulsionam
+5. IMPACTO NO MERCADO - como está mudando o setor
+6. COMO APLICAR - dicas práticas para adotar a tendência
+7. O QUE ESPERAR - próximos movimentos no setor
+8. FAQ com <div class="faq"> e <div class="faq-item">
+9. CONCLUSÃO - resumo e opinião
+
+Use classes: faq, faq-item
+Retorne APENAS HTML válido.

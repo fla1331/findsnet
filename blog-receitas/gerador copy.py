@@ -1,0 +1,2708 @@
+#!/usr/bin/env python3
+"""
+GERADOR DE ARTIGOS - MULTILÍNGUE COMPLETO
+VERSÃO REVISADA: ATUALIZA HEAD SEM APAGAR CONTEÚDO
+"""
+
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+import csv
+import re
+import random
+import unicodedata
+import json
+import requests
+from datetime import datetime, timedelta
+from pathlib import Path
+from xml.dom import minidom
+import xml.etree.ElementTree as ET
+import shutil
+import webbrowser
+import time
+
+# ============================================================
+# ===== TRADUÇÃO DE CATEGORIAS ===============================
+# ============================================================
+
+TRADUCAO_CATEGORIAS = {
+    'pt': {
+        'receitas-saudaveis': 'receitas-saudaveis',
+        'nutricao': 'nutricao',
+        'bem-estar': 'bem-estar',
+        'longevidade': 'longevidade',
+        'emagrecimento': 'emagrecimento'
+    },
+    'en': {
+        'receitas-saudaveis': 'healthy-recipes',
+        'nutricao': 'nutrition',
+        'bem-estar': 'wellness',
+        'longevidade': 'longevity',
+        'emagrecimento': 'weight-loss'
+    },
+    'es': {
+        'receitas-saudaveis': 'recetas-saludables',
+        'nutricao': 'nutricion',
+        'bem-estar': 'bienestar',
+        'longevidade': 'longevidad',
+        'emagrecimento': 'perdida-de-peso'
+    }
+}
+
+# ============================================================
+# ===== MAPA DE IDIOMAS ======================================
+# ============================================================
+
+IDIOMAS = {
+    'pt': {
+        'lang': 'pt', 'locale': 'pt_BR',
+        'review': 'Review Completo',
+        'comprar': 'Comprar Agora',
+        'ver_oferta': 'Ver Oferta',
+        'menu_inicio': 'Início',
+        'menu_sobre': 'Sobre',
+        'menu_contato': 'Contato',
+        'footer': 'Todos os direitos reservados.',
+        'sobre_titulo': 'Sobre Nós',
+        'contato_titulo': 'Contato',
+        'privacidade_titulo': 'Política de Privacidade',
+        'cookies_titulo': 'Política de Cookies',
+        'nao_encontrado': 'Página não encontrada',
+        'voltar_inicio': 'Voltar para o início',
+        'publicado': 'Publicado',
+        'rascunho': 'Rascunho',
+        'leia_tambem': 'Leia também',
+        'compartilhar': 'Compartilhar',
+        'autor': 'Por',
+        'data_publicacao': 'Publicado em',
+        'faq': 'Perguntas Frequentes',
+        'revisar_ia': 'Revisar com IA',
+        'categorias': 'Categorias',
+        'idioma_nome': 'Português'
+    },
+    'en': {
+        'lang': 'en', 'locale': 'en_US',
+        'review': 'Complete Review',
+        'comprar': 'Buy Now',
+        'ver_oferta': 'View Offer',
+        'menu_inicio': 'Home',
+        'menu_sobre': 'About',
+        'menu_contato': 'Contact',
+        'footer': 'All rights reserved.',
+        'sobre_titulo': 'About Us',
+        'contato_titulo': 'Contact',
+        'privacidade_titulo': 'Privacy Policy',
+        'cookies_titulo': 'Cookies Policy',
+        'nao_encontrado': 'Page not found',
+        'voltar_inicio': 'Back to home',
+        'publicado': 'Published',
+        'rascunho': 'Draft',
+        'leia_tambem': 'Read also',
+        'compartilhar': 'Share',
+        'autor': 'By',
+        'data_publicacao': 'Published on',
+        'faq': 'Frequently Asked Questions',
+        'revisar_ia': 'Review with AI',
+        'categorias': 'Categories',
+        'idioma_nome': 'English'
+    },
+    'es': {
+        'lang': 'es', 'locale': 'es_ES',
+        'review': 'Review Completo',
+        'comprar': 'Comprar Ahora',
+        'ver_oferta': 'Ver Oferta',
+        'menu_inicio': 'Inicio',
+        'menu_sobre': 'Sobre',
+        'menu_contato': 'Contacto',
+        'footer': 'Todos los derechos reservados.',
+        'sobre_titulo': 'Sobre Nosotros',
+        'contato_titulo': 'Contacto',
+        'privacidade_titulo': 'Política de Privacidad',
+        'cookies_titulo': 'Política de Cookies',
+        'nao_encontrado': 'Página no encontrada',
+        'voltar_inicio': 'Volver al inicio',
+        'publicado': 'Publicado',
+        'rascunho': 'Borrador',
+        'leia_tambem': 'Lea también',
+        'compartilhar': 'Compartir',
+        'autor': 'Por',
+        'data_publicacao': 'Publicado el',
+        'faq': 'Preguntas Frecuentes',
+        'revisar_ia': 'Revisar con IA',
+        'categorias': 'Categorías',
+        'idioma_nome': 'Español'
+    }
+}
+
+# ============================================================
+# ===== MAPA DE PROMPTS POR NICHO ============================
+# ============================================================
+
+PROMPTS_NICHO = {
+    'receitas': {
+        'tom': 'aconchegante, apetitoso e inspirador',
+        'palavras': 'receitas saudáveis, culinária, bem-estar, nutrição, sabor',
+        'faq': [
+            'Qual o tempo de preparo?',
+            'Posso substituir algum ingrediente?',
+            'Quais os benefícios nutricionais?',
+            'Serve para quantas pessoas?',
+            'Como armazenar as sobras?'
+        ]
+    },
+    'bem-estar': {
+        'tom': 'calmante, motivador e equilibrado',
+        'palavras': 'bem-estar, saúde mental, autocuidado, equilíbrio, hábitos',
+        'faq': [
+            'Como começar a praticar?',
+            'Quanto tempo leva para ver resultados?',
+            'Funciona para qualquer pessoa?',
+            'Preciso de algum equipamento?',
+            'Qual a frequência recomendada?'
+        ]
+    },
+    'longevidade': {
+        'tom': 'informativo, científico e inspirador',
+        'palavras': 'longevidade, envelhecimento saudável, hábitos, qualidade de vida',
+        'faq': [
+            'Quais hábitos aumentam a longevidade?',
+            'A genética influencia muito?',
+            'Qual a importância da alimentação?',
+            'Exercícios físicos ajudam?',
+            'Como manter a mente saudável?'
+        ]
+    },
+    'nutricao': {
+        'tom': 'educativo, prático e confiável',
+        'palavras': 'nutrição, alimentos saudáveis, vitaminas, minerais, dieta equilibrada',
+        'faq': [
+            'Quais alimentos são mais nutritivos?',
+            'Como montar um prato equilibrado?',
+            'Preciso de suplementos?',
+            'Qual a importância das fibras?',
+            'Como ler rótulos de alimentos?'
+        ]
+    },
+    'geral': {
+        'tom': 'informativo, útil e confiável',
+        'palavras': 'qualidade, benefícios, vantagens, recomendações, confiabilidade',
+        'faq': [
+            'Quais os principais benefícios?',
+            'Como funciona?',
+            'Vale a pena?',
+            'Tem garantia?',
+            'Como usar corretamente?'
+        ]
+    }
+}
+
+# ============================================================
+# ===== CLASSE GERADORA ======================================
+# ============================================================
+
+class Gerador:
+    def __init__(self):
+        self.base = Path(__file__).parent
+        self.docs = self.base / "docs"
+        self.templates = self.base / "templates"
+        
+        self.assets_css = self.docs / "assets" / "css"
+        self.assets_js = self.docs / "assets" / "js"
+        self.assets_img = self.docs / "assets" / "img"
+        
+        self.assets_css.mkdir(parents=True, exist_ok=True)
+        self.assets_js.mkdir(parents=True, exist_ok=True)
+        self.assets_img.mkdir(parents=True, exist_ok=True)
+        
+        self.config = self.carregar_config()
+        
+        self.idioma_padrao = self.config.get('idioma_padrao', 'pt')
+        self.idioma = self.idioma_padrao
+        self.t = IDIOMAS.get(self.idioma, IDIOMAS['pt'])
+        
+        self.ia_api_key = os.getenv("OPENROUTER_API_KEY")
+        
+        self.descricoes_categorias = {}
+        self.idiomas_ativos = [idioma['codigo'] for idioma in self.config.get('idiomas', [{'codigo': 'pt'}])]
+        
+        self.criar_csv()
+        self.criar_css()
+        
+        self.idioma_selecionado = None
+    
+    # ==================== CONFIG ====================
+    
+    def carregar_config(self):
+        config_path = self.base / "config.json"
+        
+        config_padrao = {
+            'nome': 'Meu Blog',
+            'slug': 'meu-blog',
+            'icone': '📝',
+            'nome_site': 'Meu Blog',
+            'descricao': 'Conteúdo interessante para você.',
+            'url_base': 'https://meu-blog.brightnest.blog',
+            'idioma_padrao': 'pt',
+            'idiomas': [
+                {'codigo': 'pt', 'nome': 'Português', 'pasta': 'pt', 'csv': 'artigos/artigos_pt.csv'},
+                {'codigo': 'en', 'nome': 'English', 'pasta': 'en', 'csv': 'artigos/artigos_en.csv'},
+                {'codigo': 'es', 'nome': 'Español', 'pasta': 'es', 'csv': 'artigos/artigos_es.csv'}
+            ],
+            'ano': datetime.now().year,
+            'csv': 'artigos.csv',
+            'usar_ia_imagens': True,
+            'autor': 'Time do Blog',
+            'email_contato': 'contato@meu-blog.brightnest.blog',
+            'publicar_por_dia': 1,
+            'redes_sociais': {},
+            'cores': {
+                'primaria': '#1e293b',
+                'secundaria': '#facc15',
+                'fundo': '#f8fafc',
+                'texto': '#0f172a',
+                'card': '#ffffff',
+                'hover': '#eab308',
+                'destaque': '#10b981',
+                'whatsapp': '#25D366'
+            }
+        }
+        
+        if config_path.exists():
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    dados = json.load(f)
+                    for chave, valor in config_padrao.items():
+                        if chave not in dados:
+                            dados[chave] = valor
+                    print("✅ Config carregada: config.json")
+                    return dados
+            except Exception as e:
+                print(f"⚠️ Erro ao ler config.json: {e}")
+                return config_padrao
+        else:
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(config_padrao, f, indent=2, ensure_ascii=False)
+            print("✅ config.json criado com configurações padrão")
+            return config_padrao
+    
+    # ==================== UTILITÁRIOS ====================
+    
+    def formatar_titulo_categoria(self, slug):
+        palavras = slug.replace('-', ' ').split()
+        palavras_formatadas = []
+        for palavra in palavras:
+            if palavra.lower() in ['de', 'da', 'do', 'das', 'dos', 'e']:
+                palavras_formatadas.append(palavra.lower())
+            else:
+                palavras_formatadas.append(palavra.capitalize())
+        return ' '.join(palavras_formatadas)
+    
+    def criar_slug(self, texto):
+        texto = unicodedata.normalize('NFKD', texto)
+        texto = texto.encode('ASCII', 'ignore').decode('ASCII')
+        slug = texto.lower()
+        slug = re.sub(r'[^a-z0-9\s-]', '', slug)
+        slug = re.sub(r'[\s]+', '-', slug)
+        slug = re.sub(r'[-]+', '-', slug)
+        return slug.strip('-')[:60]
+    
+    def ler_numero(self, msg, minimo=1, maximo=99):
+        while True:
+            try:
+                valor = input(msg).strip()
+                if not valor:
+                    return None
+                num = int(valor)
+                if minimo <= num <= maximo:
+                    return num
+                print(f"   ⚠️ Digite entre {minimo} e {maximo}")
+            except ValueError:
+                print("   ⚠️ Digite um número válido")
+    
+    def ler_sim_nao(self, msg):
+        while True:
+            resp = input(msg).strip().lower()
+            if resp in ['s', 'sim', 'y', 'yes']:
+                return True
+            if resp in ['n', 'nao', 'não', 'no']:
+                return False
+            print("   ⚠️ Digite 's' ou 'n'")
+    
+    # ==================== TEMPLATES POR IDIOMA ====================
+    
+    def ler_template(self, nome, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        caminho_idioma = self.templates / idioma / nome
+        if caminho_idioma.exists():
+            with open(caminho_idioma, 'r', encoding='utf-8') as f:
+                return f.read()
+        
+        caminho_padrao = self.templates / nome
+        if caminho_padrao.exists():
+            with open(caminho_padrao, 'r', encoding='utf-8') as f:
+                return f.read()
+        
+        return None
+    
+    def renderizar_template(self, nome, variaveis, idioma=None):
+        template = self.ler_template(nome, idioma)
+        if template is None:
+            return None
+        
+        html = template
+        for chave, valor in variaveis.items():
+            html = html.replace(f'{{{{{chave}}}}}', str(valor))
+        return html
+    
+    # ==================== CSV ====================
+    
+    def ler_csv(self, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        csv_path = None
+        for lang in self.config.get('idiomas', []):
+            if lang.get('codigo') == idioma:
+                csv_path = self.base / lang.get('csv', f'artigos/artigos_{idioma}.csv')
+                break
+        
+        if csv_path is None:
+            csv_path = self.base / self.config.get('csv', 'artigos.csv')
+        
+        if not csv_path.exists():
+            return []
+        
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            return list(reader)
+    
+    def salvar_csv(self, artigos, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        csv_path = None
+        for lang in self.config.get('idiomas', []):
+            if lang.get('codigo') == idioma:
+                csv_path = self.base / lang.get('csv', f'artigos/artigos_{idioma}.csv')
+                break
+        
+        if csv_path is None:
+            csv_path = self.base / self.config.get('csv', 'artigos.csv')
+        
+        if not artigos:
+            return
+        
+        csv_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        cabecalho = list(artigos[0].keys())
+        with open(csv_path, 'w', encoding='utf-8', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=cabecalho)
+            writer.writeheader()
+            writer.writerows(artigos)
+    
+    def criar_csv(self):
+        for lang in self.config.get('idiomas', []):
+            codigo = lang.get('codigo', 'pt')
+            csv_nome = lang.get('csv', f'artigos/artigos_{codigo}.csv')
+            csv_path = self.base / csv_nome
+            
+            if csv_path.exists():
+                continue
+            
+            csv_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            dados = [
+                ["artigo", "links_afiliados", "status", "categoria", "palavras_chave", "descricao", "tipo", "data_publicacao", "autor"],
+                ["Artigo Exemplo", "#", "rascunho", "geral", "palavras, chave", "Descrição do artigo.", "review", "", self.config.get('autor', 'Autor')],
+            ]
+            
+            with open(csv_path, 'w', encoding='utf-8', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerows(dados)
+            print(f"✅ CSV criado: {csv_nome}")
+    
+    # ==================== CSS ====================
+    
+    def criar_css(self):
+        css_destino = self.assets_css / "style.css"
+        custom_destino = self.assets_css / "custom.css"
+        
+        if css_destino.exists():
+            print("✅ style.css mantido (já existe)")
+        else:
+            css_origem = self.base / "assets" / "css" / "style.css"
+            if css_origem.exists():
+                shutil.copy2(css_origem, css_destino)
+                print("✅ style.css copiado do assets/")
+            else:
+                c = self.config.get('cores', {})
+                css = f"""
+* {{ margin: 0; padding: 0; box-sizing: border-box; }}
+
+:root {{
+    --primaria: {c.get('primaria', '#1e293b')};
+    --secundaria: {c.get('secundaria', '#facc15')};
+    --destaque: {c.get('destaque', '#10b981')};
+    --fundo: {c.get('fundo', '#f8fafc')};
+    --texto: {c.get('texto', '#0f172a')};
+    --card: {c.get('card', '#ffffff')};
+    --hover: {c.get('hover', '#eab308')};
+    --whatsapp: {c.get('whatsapp', '#25D366')};
+    --sombra: 0 4px 20px rgba(0,0,0,0.06);
+    --borda: 12px;
+    --transicao: 0.3s ease;
+}}
+
+body {{
+    font-family: 'Inter', sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+    line-height: 1.7;
+}}
+.container {{ max-width: 1100px; margin: 0 auto; padding: 0 20px; }}
+"""
+                with open(css_destino, 'w', encoding='utf-8') as f:
+                    f.write(css)
+                print("✅ style.css criado (fallback)")
+        
+        if custom_destino.exists():
+            print("✅ custom.css mantido (já existe)")
+        else:
+            custom_origem = self.base / "assets" / "css" / "custom.css"
+            if custom_origem.exists():
+                shutil.copy2(custom_origem, custom_destino)
+                print("✅ custom.css copiado do assets/")
+            else:
+                with open(custom_destino, 'w', encoding='utf-8') as f:
+                    f.write("/* Custom styles */\n")
+                print("✅ custom.css criado (vazio)")
+    
+    # ==================== IMAGEM ====================
+    
+    def gerar_imagem(self, artigo, categoria=""):
+        if self.config.get('usar_ia_imagens', True):
+            try:
+                prompt = f"{artigo}, {categoria}, health, wellness, recipe, healthy food, 4k"
+                return f"https://image.pollinations.ai/prompt/{prompt}?width=1200&height=630&nologo=true"
+            except:
+                pass
+        
+        imagens = [
+            'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?w=1200&h=630&fit=crop',
+            'https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?w=1200&h=630&fit=crop',
+            'https://images.pexels.com/photos/3771118/pexels-photo-3771118.jpeg?w=1200&h=630&fit=crop',
+        ]
+        return random.choice(imagens)
+    
+    # ==================== DESCRIÇÃO CATEGORIA ====================
+    
+    def gerar_descricao_categoria(self, categoria):
+        if categoria in self.descricoes_categorias:
+            return self.descricoes_categorias[categoria]
+        
+        titulo_categoria = self.formatar_titulo_categoria(categoria)
+        
+        descricoes_fixas = {
+            'receitas': 'Receitas saudáveis e deliciosas para transformar sua alimentação com sabor e nutrição.',
+            'bem-estar': 'Dicas de autocuidado, equilíbrio e hábitos para uma vida mais leve e saudável.',
+            'longevidade': 'Hábitos e práticas para viver mais e melhor com qualidade de vida.',
+            'nutricao': 'Informações sobre nutrição, alimentos e uma dieta equilibrada para a saúde.',
+            'saude': 'Conteúdos sobre saúde preventiva, bem-estar e qualidade de vida.',
+        }
+        descricao = descricoes_fixas.get(categoria, f'Conteúdo sobre {titulo_categoria} para transformar sua saúde e bem-estar.')
+        self.descricoes_categorias[categoria] = descricao
+        return descricao
+    
+    # ==================== CONTEÚDO COM IA ====================
+    
+    def gerar_conteudo_ia(self, artigo, link, categoria="geral", palavras_chave="", tipo="review"):
+        if not self.ia_api_key:
+            return self.conteudo_basico(artigo, link, tipo)
+        
+        prompt_nicho = PROMPTS_NICHO.get(categoria, PROMPTS_NICHO['geral'])
+        
+        prompt_template = self.ler_template(f'prompts/{tipo}.txt')
+        
+        if prompt_template:
+            print(f"   🤖 Gerando conteúdo do tipo: {tipo} para: {categoria}...")
+            
+            prompt = prompt_template.replace('{artigo}', artigo)
+            prompt = prompt.replace('{link}', link)
+            prompt = prompt.replace('{categoria}', categoria)
+            prompt = prompt.replace('{tom}', prompt_nicho['tom'])
+            prompt = prompt.replace('{palavras_chave}', palavras_chave or prompt_nicho['palavras'])
+            prompt = prompt.replace('{quantidade}', str(random.randint(8, 12)))
+        else:
+            print(f"   ⚠️ Template {tipo}.txt não encontrado, usando fallback...")
+            prompt = self._gerar_prompt_fallback(artigo, link, categoria, palavras_chave, tipo)
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.ia_api_key}", "Content-Type": "application/json"}
+            data = {
+                "model": "deepseek/deepseek-chat",
+                "messages": [
+                    {"role": "system", "content": f"Você é especialista em {categoria} e criação de conteúdo do tipo {tipo}."},
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": 6000,
+                "temperature": 0.8
+            }
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=data,
+                timeout=120
+            )
+            if response.status_code == 200:
+                conteudo = response.json()["choices"][0]["message"]["content"]
+                conteudo = re.sub(r'```(?:html)?\s*', '', conteudo)
+                conteudo = re.sub(r'\s*```', '', conteudo)
+                
+                if 'faq-item' not in conteudo.lower() or 'faq-question' not in conteudo.lower():
+                    conteudo += self._gerar_faq_fallback(categoria)
+                
+                return conteudo
+            else:
+                print(f"   ⚠️ Erro na API: {response.status_code}")
+                return self.conteudo_basico(artigo, link, tipo)
+        except Exception as e:
+            print(f"   ⚠️ Erro IA: {e}")
+            return self.conteudo_basico(artigo, link, tipo)
+    
+    def _gerar_prompt_fallback(self, artigo, link, categoria, palavras_chave, tipo="review"):
+        prompt_nicho = PROMPTS_NICHO.get(categoria, PROMPTS_NICHO['geral'])
+        titulo_categoria = self.formatar_titulo_categoria(categoria)
+        
+        tipos = {
+            'review': f"""
+            Crie um REVIEW COMPLETO sobre {artigo} em português do Brasil.
+            NICHO: {titulo_categoria}
+            TOM: {prompt_nicho['tom']}
+            PALAVRAS-CHAVE: {palavras_chave or prompt_nicho['palavras']}
+            ESTRUTURA: Título, Introdução, Benefícios, Especificações, Prós e Contras, FAQ, Conclusão, CTA com link: {link}
+            Use classes: article-table, faq, faq-item, cta-box, btn-primary
+            Retorne APENAS HTML válido.
+            """,
+            'guia': f"""
+            Crie um GUIA COMPLETO sobre {artigo} em português do Brasil.
+            NICHO: {titulo_categoria}
+            TOM: {prompt_nicho['tom']}
+            PALAVRAS-CHAVE: {palavras_chave or prompt_nicho['palavras']}
+            ESTRUTURA: Título, Introdução, Capítulos, FAQ, Conclusão, CTA com link: {link}
+            Use classes: article-table, faq, faq-item, cta-box, btn-primary
+            Retorne APENAS HTML válido.
+            """,
+            'lista': f"""
+            Crie uma LISTA com {artigo} em português do Brasil.
+            NICHO: {titulo_categoria}
+            TOM: {prompt_nicho['tom']}
+            PALAVRAS-CHAVE: {palavras_chave or prompt_nicho['palavras']}
+            ESTRUTURA: Título, Introdução, 8-12 itens, FAQ, Conclusão, CTA com link: {link}
+            Use classes: article-table, faq, faq-item, cta-box, btn-primary
+            Retorne APENAS HTML válido.
+            """,
+            'tutorial': f"""
+            Crie um TUTORIAL sobre {artigo} em português do Brasil.
+            NICHO: {titulo_categoria}
+            TOM: {prompt_nicho['tom']}
+            PALAVRAS-CHAVE: {palavras_chave or prompt_nicho['palavras']}
+            ESTRUTURA: Título, Introdução, Materiais, Passo a passo, FAQ, Conclusão, CTA com link: {link}
+            Use classes: article-table, faq, faq-item, cta-box, btn-primary
+            Retorne APENAS HTML válido.
+            """
+        }
+        return tipos.get(tipo, tipos['review'])
+    
+    # ==================== FAQ ====================
+    
+    def _gerar_faq_fallback(self, categoria):
+        prompt_nicho = PROMPTS_NICHO.get(categoria, PROMPTS_NICHO['geral'])
+        faq_perguntas = prompt_nicho.get('faq', PROMPTS_NICHO['geral']['faq'])
+        
+        respostas = {
+            'Qual o tempo de preparo?': 'O tempo médio de preparo é de 30 a 45 minutos, dependendo da receita.',
+            'Posso substituir algum ingrediente?': 'Sim! Muitos ingredientes podem ser substituídos por opções mais saudáveis ou que você tem em casa.',
+            'Quais os benefícios nutricionais?': 'Estas receitas são ricas em vitaminas, minerais e fibras, essenciais para uma alimentação equilibrada.',
+            'Serve para quantas pessoas?': 'A maioria das receitas serve de 2 a 4 pessoas, mas você pode ajustar as quantidades.',
+            'Como armazenar as sobras?': 'Guarde em um recipiente fechado na geladeira por até 3 dias.',
+            'Como começar a praticar?': 'Comece com pequenos passos, escolhendo um hábito por vez e sendo consistente.',
+            'Quanto tempo leva para ver resultados?': 'Os primeiros resultados podem ser notados em 2 a 4 semanas de prática consistente.',
+            'Funciona para qualquer pessoa?': 'Sim, as técnicas podem ser adaptadas para diferentes idades e estilos de vida.',
+            'Preciso de algum equipamento?': 'A maioria das práticas requer apenas um espaço confortável e roupas adequadas.',
+            'Qual a frequência recomendada?': 'Recomenda-se praticar de 3 a 5 vezes por semana para melhores resultados.',
+        }
+        
+        faq_html = f"""
+        <h2 id="faq">{self.t['faq']}</h2>
+        <div class="faq">
+        """
+        
+        for pergunta in faq_perguntas[:6]:
+            resposta = respostas.get(pergunta, f'Sobre "{pergunta}", temos informações detalhadas disponíveis.')
+            
+            faq_html += f"""
+            <div class="faq-item">
+                <button class="faq-question" type="button" onclick="this.parentElement.classList.toggle('open')">
+                    {pergunta}
+                    <span class="faq-icon">▼</span>
+                </button>
+                <div class="faq-answer">
+                    <p>{resposta}</p>
+                </div>
+            </div>
+            """
+        
+        faq_html += "</div>"
+        return faq_html
+    
+    # ==================== REVISÃO COM IA ====================
+    
+    def revisar_com_ia(self, conteudo, artigo, categoria="geral", tipo="review"):
+        if not self.ia_api_key:
+            return conteudo
+        
+        print(f"   🔍 Revisando e aprofundando conteúdo (tipo: {tipo})...")
+        
+        prompt_nicho = PROMPTS_NICHO.get(categoria, PROMPTS_NICHO['geral'])
+        titulo_categoria = self.formatar_titulo_categoria(categoria)
+        
+        prompt = f"""
+        Revise e MELHORE SIGNIFICATIVAMENTE este artigo sobre {artigo}.
+        TIPO: {tipo}
+        CATEGORIA: {titulo_categoria}
+        TOM: {prompt_nicho['tom']}
+        
+        O QUE MELHORAR:
+        1. Aprofunde a introdução
+        2. Adicione mais detalhes nos benefícios
+        3. Enriqueça a tabela com class="article-table"
+        4. Melhore o FAQ com class="faq" e class="faq-item"
+        5. Adicione id="conclusao" na conclusão
+        
+        CONTEÚDO ORIGINAL:
+        {conteudo}
+        
+        Retorne APENAS o HTML revisado.
+        """
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.ia_api_key}", "Content-Type": "application/json"}
+            data = {
+                "model": "deepseek/deepseek-chat",
+                "messages": [
+                    {"role": "system", "content": f"Revisor especialista em {titulo_categoria} e conteúdo do tipo {tipo}."},
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": 6000,
+                "temperature": 0.7
+            }
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=data,
+                timeout=120
+            )
+            if response.status_code == 200:
+                revisado = response.json()["choices"][0]["message"]["content"]
+                revisado = re.sub(r'```(?:html)?\s*', '', revisado)
+                revisado = re.sub(r'\s*```', '', revisado)
+                return revisado
+            else:
+                return conteudo
+        except Exception as e:
+            print(f"   ⚠️ Erro na revisão: {e}")
+            return conteudo
+    
+    def conteudo_basico(self, artigo, link, tipo="review"):
+        t = self.t
+        
+        titulo_map = {
+            'review': f"Review Completo: {artigo}",
+            'guia': f"Guia Completo: {artigo}",
+            'lista': f"Lista: {artigo}",
+            'tutorial': f"Tutorial: {artigo}",
+            'comparativo': f"Comparativo: {artigo}"
+        }
+        titulo = titulo_map.get(tipo, f"Artigo: {artigo}")
+        
+        return f"""
+<h1 id="introducao">{titulo}</h1>
+
+<p><strong>{artigo}</strong> é a escolha perfeita para sua saúde e bem-estar.</p>
+
+<h2 id="beneficios">Benefícios</h2>
+<ul>
+    <li><strong>Nutrição equilibrada:</strong> Ingredientes que fazem bem para o corpo</li>
+    <li><strong>Sabor incomparável:</strong> Receitas que agradam ao paladar</li>
+    <li><strong>Bem-estar garantido:</strong> Hábitos que transformam sua qualidade de vida</li>
+</ul>
+
+<div class="cta-box">
+    <h3>{t['comprar']}</h3>
+    <p>Comece sua jornada de saúde e bem-estar agora</p>
+    <a href="{link}" class="btn-primary" target="_blank" rel="nofollow sponsored">{t['ver_oferta']}</a>
+</div>
+"""
+    
+    # ==================== CATEGORIAS ====================
+    
+    def get_categorias(self, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        artigos = self.ler_csv(idioma)
+        categorias = set()
+        for a in artigos:
+            if a.get('status') == 'publicado':
+                cat = a.get('categoria', '').strip()
+                if cat:
+                    categorias.add(cat.lower())
+        return sorted(list(categorias))
+    
+    def get_categoria_traduzida(self, categoria, idioma):
+        if idioma in TRADUCAO_CATEGORIAS:
+            return TRADUCAO_CATEGORIAS[idioma].get(categoria, categoria)
+        return categoria
+    
+    def get_artigos_publicados(self, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        artigos = self.ler_csv(idioma)
+        publicados = []
+        for a in artigos:
+            if a.get('status') == 'publicado':
+                publicados.append({
+                    'slug': self.criar_slug(a.get('artigo', '')),
+                    'nome': a.get('artigo', ''),
+                    'categoria': a.get('categoria', 'geral'),
+                    'data_publicacao': a.get('data_publicacao', datetime.now().strftime("%Y-%m-%d"))
+                })
+        return publicados
+    
+    # ==================== HEADER ====================
+    
+    def get_header(self, ativo="inicio", categoria_atual=None, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        header_template = self.ler_template('header.html', idioma)
+        
+        categorias = self.get_categorias(idioma)
+        
+        if header_template:
+            cat_links = ""
+            for cat in categorias[:6]:
+                cat_traduzida = self.get_categoria_traduzida(cat, idioma)
+                ativo_cat = 'ativo' if categoria_atual == cat else ''
+                titulo_cat = self.formatar_titulo_categoria(cat)
+                cat_links += f'<a href="/{idioma}/{cat_traduzida}/" class="{ativo_cat}">{titulo_cat}</a>'
+            
+            header_html = header_template.replace('{{NOME_SITE}}', self.config.get('nome_site', 'Meu Blog'))
+            header_html = header_html.replace('{{CATEGORIAS_MENU}}', cat_links)
+            header_html = header_html.replace('{{IDIOMA}}', idioma)
+            return header_html
+        
+        t = self.t
+        cat_links = ""
+        for cat in categorias[:6]:
+            cat_traduzida = self.get_categoria_traduzida(cat, idioma)
+            ativo_cat = 'ativo' if categoria_atual == cat else ''
+            titulo_cat = self.formatar_titulo_categoria(cat)
+            cat_links += f'<a href="/{idioma}/{cat_traduzida}/" class="{ativo_cat}">{titulo_cat}</a>'
+        
+        return f"""
+<header>
+    <div class="container">
+        <a href="/{idioma}/" class="logo">
+            <span class="icone">{self.config.get('icone', '📝')}</span>
+            <span class="nome">{self.config.get('nome_site', 'Meu Blog')}</span>
+        </a>
+        <button class="menu-toggle" aria-label="Menu">☰</button>
+        <nav>
+            <a href="/{idioma}/" class="{'ativo' if ativo=='inicio' else ''}">{t['menu_inicio']}</a>
+            {cat_links}
+            <button class="theme-toggle" aria-label="Tema">🌙</button>
+        </nav>
+    </div>
+</header>"""
+    
+    # ==================== HEAD ====================
+    
+    def get_head(self, titulo, descricao, url, imagem="", extra=""):
+        head_template = self.ler_template('head.html')
+        
+        if not imagem:
+            imagem = f"{self.config.get('url_base', '')}/assets/img/og-default.jpg"
+        
+        hreflang_tags = ""
+        for lang in self.config.get('idiomas', []):
+            codigo = lang.get('codigo', 'pt')
+            
+            url_base_sem_idioma = url
+            for lang_code in [l['codigo'] for l in self.config.get('idiomas', [])]:
+                if f'/{lang_code}/' in url_base_sem_idioma:
+                    url_base_sem_idioma = url_base_sem_idioma.replace(f'/{lang_code}/', '/')
+                    break
+            
+            if f'/{codigo}/' in url:
+                url_final = url
+            else:
+                base_url = self.config.get('url_base', '')
+                if url_base_sem_idioma.startswith('/'):
+                    url_final = f"/{codigo}{url_base_sem_idioma}"
+                else:
+                    if url.startswith(base_url):
+                        resto = url[len(base_url):]
+                        if resto.startswith('/'):
+                            url_final = f"{base_url}/{codigo}{resto}"
+                        else:
+                            url_final = f"{base_url}/{codigo}/{resto}"
+                    else:
+                        url_final = f"{base_url}/{codigo}/{url_base_sem_idioma.lstrip('/')}"
+            
+            hreflang_tags += f'<link rel="alternate" href="{url_final}" hreflang="{codigo}" />\n'
+        
+        hreflang_tags += f'<link rel="alternate" href="{url}" hreflang="x-default" />\n'
+        
+        if head_template:
+            head_html = head_template.replace('{{TITULO}}', titulo)
+            head_html = head_html.replace('{{DESCRICAO}}', descricao[:160])
+            head_html = head_html.replace('{{URL}}', url)
+            head_html = head_html.replace('{{IMAGEM}}', imagem)
+            head_html = head_html.replace('{{NOME_SITE}}', self.config.get('nome_site', 'Meu Blog'))
+            head_html = head_html.replace('{{EXTRA_HEAD}}', hreflang_tags + extra)
+            head_html = head_html.replace('{{DATA}}', datetime.now().strftime("%Y-%m-%d"))
+            head_html = head_html.replace('{{AUTOR}}', self.config.get('autor', 'Autor'))
+            
+            head_html = re.sub(r'^\s*<head>', '', head_html)
+            head_html = re.sub(r'</head>\s*$', '', head_html)
+            
+            return head_html
+        
+        return f"""
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{titulo}</title>
+    <meta name="description" content="{descricao[:160]}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{url}">
+    
+    {hreflang_tags}
+    
+    <meta property="og:title" content="{titulo}">
+    <meta property="og:description" content="{descricao[:160]}">
+    <meta property="og:url" content="{url}">
+    <meta property="og:image" content="{imagem}">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="{self.config.get('nome_site', 'Meu Blog')}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    
+    <script type="application/ld+json">
+    {{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "{titulo}",
+      "description": "{descricao[:160]}",
+      "image": "{imagem}",
+      "url": "{url}",
+      "datePublished": "{datetime.now().strftime('%Y-%m-%d')}",
+      "dateModified": "{datetime.now().strftime('%Y-%m-%d')}",
+      "author": {{
+        "@type": "Person",
+        "name": "{self.config.get('autor', 'Autor')}"
+      }},
+      "publisher": {{
+        "@type": "Organization",
+        "name": "{self.config.get('nome_site', 'Meu Blog')}"
+      }}
+    }}
+    </script>
+    {extra}
+    """
+    
+    # ==================== FOOTER ====================
+    
+    def get_footer(self, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        categorias = self.get_categorias(idioma)
+        cat_links = ""
+        for cat in categorias[:8]:
+            cat_traduzida = self.get_categoria_traduzida(cat, idioma)
+            titulo_cat = self.formatar_titulo_categoria(cat)
+            cat_links += f'<li><a href="/{idioma}/{cat_traduzida}/">{titulo_cat}</a></li>\n'
+        
+        footer_template = self.ler_template('footer.html', idioma)
+        
+        if footer_template is None:
+            footer_template = """<!-- ===== Footer ===== -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="/{{IDIOMA}}/" class="logo logo--light">
+        <span class="logo-mark">💻</span>
+        {{NOME_SITE}}
+      </a>
+      <p>{{DESCRICAO}}</p>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Explorar</h4>
+      <ul>
+        <li><a href="/{{IDIOMA}}/">Início</a></li>
+        {{CATEGORIAS_FOOTER}}
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Institucional</h4>
+      <ul>
+        <li><a href="/{{IDIOMA}}/sobre.html">Sobre</a></li>
+        <li><a href="/{{IDIOMA}}/contato.html">Contato</a></li>
+        <li><a href="/{{IDIOMA}}/politica-privacidade.html">Privacidade</a></li>
+        <li><a href="/{{IDIOMA}}/cookies.html">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {{ANO}} {{NOME_SITE}}. Todos os direitos reservados.</p>
+  </div>
+</footer>"""
+        
+        footer_html = footer_template.replace('{{NOME_SITE}}', self.config.get('nome_site', 'Meu Blog'))
+        footer_html = footer_html.replace('{{DESCRICAO}}', self.config.get('descricao', ''))
+        footer_html = footer_html.replace('{{ANO}}', str(self.config.get('ano', datetime.now().year)))
+        footer_html = footer_html.replace('{{CATEGORIAS_FOOTER}}', cat_links)
+        footer_html = footer_html.replace('{{IDIOMA}}', idioma)
+        
+        return footer_html
+    
+    # ==================== PÁGINAS ====================
+    
+    def criar_pagina(self, nome, titulo, conteudo, ativo="inicio", idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        caminho = self.docs / idioma / f"{nome}.html"
+        t = self.t
+        
+        html = f"""<!DOCTYPE html>
+<html lang="{t['lang']}">
+<head>
+{self.get_head(
+    titulo=f"{self.config.get('nome_site', 'Meu Blog')} - {titulo}",
+    descricao=f"{titulo} - {self.config.get('nome', 'Blog')}",
+    url=f"{self.config.get('url_base', '')}/{idioma}/{nome}.html"
+)}
+</head>
+<body>
+    {self.get_header(ativo, None, idioma)}
+    <main class="container">
+        <div class="artigo">
+            <h1>{titulo}</h1>
+            {conteudo}
+        </div>
+    </main>
+    {self.get_footer(idioma)}
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>"""
+        
+        caminho.parent.mkdir(parents=True, exist_ok=True)
+        with open(caminho, 'w', encoding='utf-8') as f:
+            f.write(html)
+        return caminho
+    
+    # ==================== PÁGINAS DE CATEGORIA ====================
+    
+    def criar_pagina_categoria(self, categoria, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+        
+        caminho = self.docs / idioma / categoria_traduzida / "index.html"
+        t = self.t
+        c = self.config
+        
+        titulo_categoria = self.formatar_titulo_categoria(categoria)
+        descricao = self.gerar_descricao_categoria(categoria)
+        
+        artigos = self.get_artigos_publicados(idioma)
+        artigos_cat = []
+        for a in artigos:
+            if a.get('categoria', '').lower() == categoria.lower():
+                artigos_cat.append(a)
+        
+        if not artigos_cat:
+            return None
+        
+        artigos_cat.sort(key=lambda x: x['data_publicacao'], reverse=True)
+        
+        lista_cards = ""
+        for a in artigos_cat:
+            img = self.gerar_imagem(a['nome'], categoria)
+            data_formatada = datetime.strptime(a['data_publicacao'], "%Y-%m-%d").strftime("%d/%m/%Y") if a['data_publicacao'] else datetime.now().strftime("%d/%m/%Y")
+            tempo_leitura = random.randint(4, 8)
+            
+            card = f'''<article class="post-card">
+  <a href="/{idioma}/{categoria_traduzida}/{a['slug']}/" class="post-card-img">
+    <img src="{img}" alt="{a['nome']}">
+  </a>
+  <div class="post-card-body">
+    <a href="/{idioma}/{categoria_traduzida}/" class="tag">{titulo_categoria}</a>
+    <h3 class="post-card-title"><a href="/{idioma}/{categoria_traduzida}/{a['slug']}/">{a['nome']}</a></h3>
+    <div class="post-card-meta">
+      <span>{data_formatada}</span>
+      <span class="meta-dot">·</span>
+      <span>{tempo_leitura} min de leitura</span>
+    </div>
+    <p class="post-card-excerpt">{a['nome'][:120]}...</p>
+    <a href="/{idioma}/{categoria_traduzida}/{a['slug']}/" class="read-more">Ler mais →</a>
+  </div>
+</article>'''
+            lista_cards += card
+        
+        head_html = self.get_head(
+            titulo=f"{c.get('nome_site', 'Meu Blog')} - {titulo_categoria}",
+            descricao=descricao,
+            url=f"{c.get('url_base', '')}/{idioma}/{categoria_traduzida}/"
+        )
+        
+        template = self.ler_template('categoria.html', idioma)
+        
+        if template:
+            variaveis = {
+                'HEAD': head_html,
+                'CATEGORIA': titulo_categoria,
+                'DESCRICAO_CATEGORIA': descricao,  # <-- CORRIGIDO!
+                'IDIOMA': t['lang'],
+                'HEADER': self.get_header('categoria', categoria, idioma),
+                'FOOTER': self.get_footer(idioma),
+                'ARTIGOS_CATEGORIA': lista_cards
+            }
+            html = self.renderizar_template('categoria.html', variaveis, idioma)
+        else:
+            html = f"""<!DOCTYPE html>
+<html lang="{t['lang']}">
+<head>
+{head_html}
+</head>
+<body>
+    {self.get_header('categoria', categoria, idioma)}
+    <main class="container">
+        <div class="banner">
+            <h1>{titulo_categoria}</h1>
+            <p>{descricao}</p>
+        </div>
+        <div class="post-grid">
+            {lista_cards}
+        </div>
+    </main>
+    {self.get_footer(idioma)}
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>"""
+        
+        caminho.parent.mkdir(parents=True, exist_ok=True)
+        with open(caminho, 'w', encoding='utf-8') as f:
+            f.write(html)
+        return caminho
+    
+    def criar_todas_categorias(self, idioma=None):
+        """CRIA AS PÁGINAS DE CATEGORIA - NÃO APAGA NADA"""
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        print(f"\n📂 CRIANDO PÁGINAS DE CATEGORIA ({idioma.upper()})")
+        print("-" * 40)
+        
+        pasta_idioma = self.docs / idioma
+        pasta_idioma.mkdir(parents=True, exist_ok=True)
+        
+        for cat in self.get_categorias(idioma):
+            if self.criar_pagina_categoria(cat, idioma):
+                titulo = self.formatar_titulo_categoria(cat)
+                cat_traduzida = self.get_categoria_traduzida(cat, idioma)
+                print(f"   ✅ /{idioma}/{cat_traduzida}/ - {titulo}")
+        
+        self.criar_index(idioma=idioma)
+        self.criar_sitemap()
+        
+        print(f"✅ Páginas de categoria criadas! ({idioma.upper()})")
+    
+    # ==================== INDEX ====================
+    
+    def criar_index(self, pagina=1, idioma=None):
+        """Cria a página inicial usando o template index.html"""
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        t = self.t
+        c = self.config
+        
+        artigos = self.get_artigos_publicados(idioma)
+        artigos.sort(key=lambda x: x['data_publicacao'], reverse=True)
+        
+        artigos_por_pagina = 6
+        total_artigos = len(artigos)
+        total_paginas = (total_artigos + artigos_por_pagina - 1) // artigos_por_pagina if total_artigos > 0 else 1
+        
+        if pagina < 1:
+            pagina = 1
+        if pagina > total_paginas:
+            pagina = total_paginas
+        
+        inicio = (pagina - 1) * artigos_por_pagina
+        fim = inicio + artigos_por_pagina
+        artigos_pagina = artigos[inicio:fim]
+        
+        lista_cards = ""
+        if artigos_pagina:
+            for a in artigos_pagina:
+                img = self.gerar_imagem(a['nome'], a['categoria'])
+                data_formatada = datetime.strptime(a['data_publicacao'], "%Y-%m-%d").strftime("%d/%m/%Y") if a['data_publicacao'] else datetime.now().strftime("%d/%m/%Y")
+                titulo_categoria = self.formatar_titulo_categoria(a['categoria'])
+                tempo_leitura = random.randint(4, 8)
+                cat_traduzida = self.get_categoria_traduzida(a['categoria'], idioma)
+                
+                card = f'''<article class="card reveal">
+  <a href="/{idioma}/{cat_traduzida}/{a['slug']}/" class="card__media">
+    <img src="{img}" alt="{a['nome']}" loading="lazy" />
+    <span class="badge badge--{a['categoria']}">{titulo_categoria}</span>
+  </a>
+  <div class="card__body">
+    <h3 class="card__title">
+      <a href="/{idioma}/{cat_traduzida}/{a['slug']}/">{a['nome']}</a>
+    </h3>
+    <p class="card__excerpt">{a['nome'][:120]}...</p>
+    <div class="card__meta">
+      <div class="card__author">
+        <span class="card__avatar">{c.get('autor', 'Autor')[:2].upper()}</span>
+        <span>{c.get('autor', 'Autor')}</span>
+      </div>
+      <span>{data_formatada}</span>
+    </div>
+  </div>
+</article>'''
+                lista_cards += card
+        else:
+            lista_cards = '<p style="text-align:center;padding:40px 0;">Nenhum artigo publicado ainda.</p>'
+        
+        relacionados_sidebar = ""
+        for idx, a in enumerate(artigos[:4]):
+            data_formatada = datetime.strptime(a['data_publicacao'], "%Y-%m-%d").strftime("%d/%m/%Y") if a['data_publicacao'] else datetime.now().strftime("%d/%m/%Y")
+            cat_traduzida = self.get_categoria_traduzida(a['categoria'], idioma)
+            relacionados_sidebar += f'''
+        <li class="recent-item">
+          <span class="recent-item__num">{idx+1}</span>
+          <div>
+            <a href="/{idioma}/{cat_traduzida}/{a['slug']}/" class="recent-item__title">{a['nome']}</a>
+            <div class="recent-item__date">{data_formatada}</div>
+          </div>
+        </li>'''
+        
+        categorias_sidebar = ""
+        for cat in self.get_categorias(idioma):
+            count = sum(1 for a in artigos if a['categoria'] == cat)
+            titulo_cat = self.formatar_titulo_categoria(cat)
+            cat_traduzida = self.get_categoria_traduzida(cat, idioma)
+            categorias_sidebar += f'<li><a href="/{idioma}/{cat_traduzida}/" class="cat-item">{titulo_cat} <span class="cat-item__count">{count}</span></a></li>'
+        
+        tags = ""
+        for cat in self.get_categorias(idioma):
+            titulo_cat = self.formatar_titulo_categoria(cat)
+            cat_traduzida = self.get_categoria_traduzida(cat, idioma)
+            tags += f'<a href="/{idioma}/{cat_traduzida}/" class="tag">{titulo_cat}</a>'
+        
+        navegacao = ""
+        if total_paginas > 1:
+            navegacao = '<div class="pagination">'
+            if pagina > 1:
+                navegacao += f'<a href="/{idioma}/index{pagina-1}.html" class="page-link">« Anterior</a>'
+            else:
+                navegacao += '<span class="page-link disabled">« Anterior</span>'
+            
+            for p in range(1, total_paginas + 1):
+                if p == pagina:
+                    navegacao += f'<span class="page-link active">{p}</span>'
+                elif p == 1:
+                    navegacao += f'<a href="/{idioma}/" class="page-link">{p}</a>'
+                else:
+                    navegacao += f'<a href="/{idioma}/index{p}.html" class="page-link">{p}</a>'
+            
+            if pagina < total_paginas:
+                navegacao += f'<a href="/{idioma}/index{pagina+1}.html" class="page-link">Próximo »</a>'
+            else:
+                navegacao += '<span class="page-link disabled">Próximo »</span>'
+            navegacao += '</div>'
+        
+        primeiro_artigo = f"/{idioma}/{self.get_categoria_traduzida(artigos[0]['categoria'], idioma)}/{artigos[0]['slug']}/" if artigos else "#"
+        
+        template_html = self.ler_template('index.html', idioma)
+        
+        if template_html:
+            variaveis = {
+                'IDIOMA': idioma,
+                'HEAD': self.get_head(
+                    titulo=f"{c.get('nome_site', 'Meu Blog')} - {c.get('nome', 'Blog')}",
+                    descricao=c.get('descricao', ''),
+                    url=f"{c.get('url_base', '')}/{idioma}/"
+                ),
+                'HEADER': self.get_header('inicio', None, idioma),
+                'FOOTER': self.get_footer(idioma),
+                'NOME': c.get('nome', 'Blog'),
+                'NOME_SITE': c.get('nome_site', 'Meu Blog'),
+                'SLOGAN': c.get('slogan', 'Transforme sua rotina'),
+                'DESCRICAO': c.get('descricao', ''),
+                'PRIMEIRO_ARTIGO': primeiro_artigo,
+                'LISTA_CARDS': lista_cards,
+                'RELACIONADOS_SIDEBAR': relacionados_sidebar,
+                'CATEGORIAS_SIDEBAR': categorias_sidebar,
+                'TAGS': tags,
+                'NAVEGACAO': navegacao,
+                'TOTAL_ARTIGOS': str(total_artigos),
+                'ANO': str(c.get('ano', datetime.now().year)),
+                'ICONE': c.get('icone', '📝'),
+            }
+            html = self.renderizar_template('index.html', variaveis, idioma)
+        else:
+            html = f'''<!DOCTYPE html>
+<html lang="{t['lang']}">
+<head>
+{self.get_head(
+    titulo=f"{c.get('nome_site', 'Meu Blog')} - {c.get('nome', 'Blog')}",
+    descricao=c.get('descricao', ''),
+    url=f"{c.get('url_base', '')}/{idioma}/"
+)}
+</head>
+<body>
+    {self.get_header('inicio', None, idioma)}
+    
+    <main class="container">
+        <section class="hero">
+            <span class="hero-eyebrow">{c.get('nome', 'Blog')} · Est. {c.get('ano', datetime.now().year)}</span>
+            <h1>{c.get('nome', 'Blog')}<br>Transforme sua <em>rotina</em>.</h1>
+            <p>{c.get('descricao', '')}</p>
+            <div class="hero-actions">
+                <a href="{primeiro_artigo}" class="btn-primary">Comece agora</a>
+                <a href="#artigos-section" class="btn-outline">Explorar</a>
+            </div>
+        </section>
+
+        <div class="layout" id="artigos-section">
+            <div>
+                <div class="section-head">
+                    <h2>Artigos recentes</h2>
+                    <a href="/{idioma}/categoria/" class="see-all">Ver tudo →</a>
+                </div>
+
+                <div class="post-grid">
+                    {lista_cards}
+                </div>
+                {navegacao}
+            </div>
+
+            <aside class="sidebar">
+                <div class="sidebar-block">
+                    <h3>Posts relacionados</h3>
+                    {relacionados_sidebar}
+                </div>
+
+                <div class="sidebar-block sidebar-newsletter" id="newsletter">
+                    <h3>Newsletter</h3>
+                    <p>Receba dicas toda semana.</p>
+                    <form id="newsletter-form" action="#" method="POST">
+                        <input type="email" id="newsletter-email" placeholder="seu@email.com" required>
+                        <button type="submit" class="btn-primary">Assinar</button>
+                    </form>
+                </div>
+
+                <div class="sidebar-block">
+                    <h3>Categorias</h3>
+                    <div class="sidebar-tags">
+                        {tags}
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    {self.get_footer(idioma)}
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>'''
+        
+        caminho = self.docs / idioma / ("index.html" if pagina == 1 else f"index{pagina}.html")
+        caminho.parent.mkdir(parents=True, exist_ok=True)
+        with open(caminho, 'w', encoding='utf-8') as f:
+            f.write(html)
+        
+        print(f"✅ Index página {pagina} atualizado ({idioma.upper()} - {len(artigos_pagina)} artigos)")
+        return caminho
+    
+    # ==================== INDEX RAIZ ====================
+    
+    def criar_index_raiz(self):
+        caminho = self.docs / "index.html"
+        
+        idioma_padrao = self.config.get('idioma_padrao', 'pt')
+        base_url = self.config.get('url_base', '')
+        
+        opcoes_idiomas = ""
+        for lang in self.config.get('idiomas', []):
+            codigo = lang.get('codigo', 'pt')
+            nome = lang.get('nome', codigo.upper())
+            opcoes_idiomas += f'<a href="/{codigo}/" class="lang-option">{nome}</a>\n'
+        
+        html = f"""<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{self.config.get('nome_site', 'Meu Blog')}</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }}
+        .container {{
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 500px;
+            width: 90%;
+        }}
+        .logo {{
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }}
+        h1 {{
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }}
+        p {{
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }}
+        .lang-options {{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }}
+        .lang-option {{
+            display: block;
+            padding: 12px 20px;
+            background: #f1f5f9;
+            color: #1e293b;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }}
+        .lang-option:hover {{
+            background: #e2e8f0;
+        }}
+        .lang-option.default {{
+            background: #1e293b;
+            color: white;
+        }}
+        .lang-option.default:hover {{
+            background: #0f172a;
+        }}
+        .redirect-info {{
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }}
+        .auto-redirect {{
+            margin-top: 15px;
+            padding: 10px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #475569;
+        }}
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {{
+            var idiomas = {[lang['codigo'] for lang in self.config.get('idiomas', [])]};
+            var lang = (navigator.language || navigator.userLanguage || 'pt').substring(0, 2);
+            if (idiomas.includes(lang)) {{
+                window.location.href = '/' + lang + '/';
+            }}
+        }});
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">{self.config.get('icone', '📝')}</div>
+        <h1>{self.config.get('nome_site', 'Meu Blog')}</h1>
+        <p>{self.config.get('descricao', '')}</p>
+        
+        <div class="lang-options">
+            {opcoes_idiomas}
+        </div>
+        
+        <div class="auto-redirect">
+            🔄 Redirecionamento automático para o idioma do seu navegador
+        </div>
+        
+        <div class="redirect-info">
+            Escolha um idioma ou aguarde o redirecionamento automático.
+        </div>
+    </div>
+</body>
+</html>"""
+        
+        with open(caminho, 'w', encoding='utf-8') as f:
+            f.write(html)
+        
+        print(f"   ✅ Index raiz criado: index.html (redireciona para /{idioma_padrao}/)")
+        return caminho
+    
+    # ==================== ARTIGOS ====================
+    
+    def criar_artigo(self, artigo_data, forcar=False, revisar=True, idioma=None, forcar_head=False):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        nome = artigo_data.get('artigo', '').strip()
+        if not nome:
+            return None
+        
+        link = artigo_data.get('links_afiliados', '')
+        palavras_chave = artigo_data.get('palavras_chave', '')
+        descricao = artigo_data.get('descricao', f"Review completo de {nome}")
+        categoria = artigo_data.get('categoria', 'geral')
+        tipo = artigo_data.get('tipo', 'review')
+        data_publicacao = artigo_data.get('data_publicacao', datetime.now().strftime("%Y-%m-%d"))
+        autor = artigo_data.get('autor', self.config.get('autor', 'Autor'))
+        
+        categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+        titulo_categoria = self.formatar_titulo_categoria(categoria)
+        
+        slug = self.criar_slug(nome)
+        pasta = self.docs / idioma / categoria_traduzida / slug
+        t = self.t
+        
+        # ===== VERIFICA SE JÁ EXISTE =====
+        if not forcar and (pasta / "index.html").exists():
+            print(f"   ⏭️ Já existe: {idioma}/{categoria_traduzida}/{slug}")
+            
+            # ===== NOVO: ATUALIZA O HEAD MESMO SE EXISTIR =====
+            if forcar_head:
+                print(f"   🔄 Atualizando HEAD com templates atuais...")
+                self._atualizar_head_artigo(pasta / "index.html", artigo_data, idioma)
+            
+            return pasta / "index.html"
+        
+        print(f"   📝 Criando/Atualizando: {idioma}/{categoria_traduzida}/{slug} (tipo: {tipo})")
+        
+        imagem = self.gerar_imagem(nome, categoria)
+        
+        # ===== EXTRAI CONTEÚDO EXISTENTE SE HOUVER =====
+        conteudo = None
+        if (pasta / "index.html").exists():
+            try:
+                with open(pasta / "index.html", 'r', encoding='utf-8') as f:
+                    html_existente = f.read()
+                    match = re.search(r'<!-- CONTEUDO_INICIO -->(.*?)<!-- CONTEUDO_FIM -->', html_existente, re.DOTALL)
+                    if match:
+                        conteudo = match.group(1).strip()
+                        print(f"   📄 Conteúdo existente mantido (marcadores)")
+                    else:
+                        match = re.search(r'<article class="container article-body">(.*?)</article>', html_existente, re.DOTALL)
+                        if match:
+                            conteudo = match.group(1).strip()
+                            print(f"   📄 Conteúdo existente mantido (article-body)")
+            except Exception as e:
+                print(f"   ⚠️ Não foi possível extrair conteúdo: {e}")
+        
+        # ===== GERA CONTEÚDO NOVO SE NÃO TIVER =====
+        if conteudo is None or (forcar and not self.ler_sim_nao("   Manter conteúdo existente? (s/n): ")):
+            conteudo = self.gerar_conteudo_ia(nome, link, categoria, palavras_chave, tipo)
+            if revisar and self.ia_api_key:
+                conteudo = self.revisar_com_ia(conteudo, nome, categoria, tipo)
+            
+            conteudo = re.sub(r'<!DOCTYPE html>.*?<head>.*?</head>', '', conteudo, flags=re.DOTALL | re.IGNORECASE)
+            conteudo = re.sub(r'<body.*?>', '', conteudo, flags=re.IGNORECASE)
+            conteudo = re.sub(r'</body>', '', conteudo, flags=re.IGNORECASE)
+            conteudo = re.sub(r'<html.*?>', '', conteudo, flags=re.IGNORECASE)
+            conteudo = re.sub(r'</html>', '', conteudo, flags=re.IGNORECASE)
+            conteudo = re.sub(r'<style>.*?</style>', '', conteudo, flags=re.DOTALL | re.IGNORECASE)
+            conteudo = re.sub(r'<script type="text/javascript">.*?</script>', '', conteudo, flags=re.DOTALL | re.IGNORECASE)
+            conteudo = re.sub(r'<h2[^>]*>Introdução\s*</h2>', '', conteudo, flags=re.IGNORECASE)
+            conteudo = re.sub(r'<h2[^>]*id="[^"]*introducao[^"]*"[^>]*>Introdução\s*</h2>', '', conteudo, flags=re.IGNORECASE)
+        
+        conteudo_com_marcadores = f"<!-- CONTEUDO_INICIO -->\n{conteudo}\n<!-- CONTEUDO_FIM -->"
+        
+        titulo_map = {
+            'review': f"{nome} - {t['review']}",
+            'guia': f"Guia Completo: {nome}",
+            'lista': f"Lista: {nome}",
+            'tutorial': f"Tutorial: {nome}",
+            'comparativo': f"Comparativo: {nome}",
+            'artigo': f"{nome} - {t['review']}"
+        }
+        titulo = titulo_map.get(tipo, f"{nome} - {t['review']}")
+        
+        url = f"{self.config.get('url_base', '')}/{idioma}/{categoria_traduzida}/{slug}/"
+        data_formatada = datetime.strptime(data_publicacao, "%Y-%m-%d").strftime("%d/%m/%Y") if data_publicacao else datetime.now().strftime("%d/%m/%Y")
+        
+        template = self.ler_template('artigo.html', idioma)
+        
+        if template:
+            relacionados_html = ""
+            relacionados = self.get_artigos_publicados(idioma)
+            relacionados = [a for a in relacionados if a['slug'] != slug][:4]
+            for a in relacionados:
+                img = self.gerar_imagem(a['nome'], a['categoria'])
+                data_formatada_rel = datetime.strptime(a['data_publicacao'], "%Y-%m-%d").strftime("%d/%m/%Y") if a['data_publicacao'] else datetime.now().strftime("%d/%m/%Y")
+                titulo_cat_rel = self.formatar_titulo_categoria(a['categoria'])
+                tempo_leitura = random.randint(4, 8)
+                cat_traduzida_rel = self.get_categoria_traduzida(a['categoria'], idioma)
+                
+                card = f'''<article class="post-card">
+  <a href="/{idioma}/{cat_traduzida_rel}/{a['slug']}/" class="post-card-img">
+    <img src="{img}" alt="{a['nome']}">
+  </a>
+  <div class="post-card-body">
+    <a href="/{idioma}/{cat_traduzida_rel}/" class="tag">{titulo_cat_rel}</a>
+    <h3 class="post-card-title"><a href="/{idioma}/{cat_traduzida_rel}/{a['slug']}/">{a['nome']}</a></h3>
+    <div class="post-card-meta">
+      <span>{data_formatada_rel}</span>
+      <span class="meta-dot">·</span>
+      <span>{tempo_leitura} min de leitura</span>
+    </div>
+    <p class="post-card-excerpt">{a['nome'][:120]}...</p>
+    <a href="/{idioma}/{cat_traduzida_rel}/{a['slug']}/" class="read-more">Ler mais →</a>
+  </div>
+</article>'''
+                relacionados_html += card
+            
+            head_html = self.get_head(titulo, descricao, url, imagem)
+            
+            variaveis = {
+                'HEAD': head_html,
+                'TITULO': titulo,
+                'CONTEUDO': conteudo_com_marcadores,
+                'CATEGORIA': titulo_categoria,
+                'DATA': data_formatada,
+                'IMAGEM': imagem,
+                'AUTOR': autor,
+                'LINK_AFILIADO': link,
+                'URL': url,
+                'DESCRICAO': descricao,
+                'TEMPO_LEITURA': str(random.randint(4, 8)),
+                'IDIOMA': t['lang'],
+                'NOME_SITE': self.config.get('nome_site', 'Meu Blog'),
+                'HEADER': self.get_header('inicio', categoria, idioma),
+                'FOOTER': self.get_footer(idioma),
+                'RELACIONADOS': relacionados_html
+            }
+            html = self.renderizar_template('artigo.html', variaveis, idioma)
+            
+        else:
+            artigos_relacionados = self.get_artigos_relacionados(categoria, slug, idioma)
+            
+            if link and link.strip():
+                cta_html = f"""
+                <div class="cta-box">
+                    <h3>{t['comprar']}</h3>
+                    <p>Garanta o seu {nome} com preço especial</p>
+                    <a href="{link}" class="btn-primary" target="_blank" rel="nofollow sponsored">{t['ver_oferta']}</a>
+                </div>
+                """
+            else:
+                cta_html = ""
+            
+            html = f"""<!DOCTYPE html>
+<html lang="{t['lang']}">
+<head>
+{self.get_head(
+    titulo=titulo,
+    descricao=descricao,
+    url=url,
+    imagem=imagem,
+    extra=''
+)}
+</head>
+<body>
+    {self.get_header('inicio', categoria, idioma)}
+    <main class="container">
+        <div class="banner">
+            <h1>{self.config.get('nome', 'Blog')}</h1>
+            <p>{self.config.get('descricao', '')}</p>
+        </div>
+        
+        <div class="artigo">
+            <div class="meta">
+                <span>📅 {t['data_publicacao']} {data_formatada}</span>
+                <span>✍️ {t['autor']} {autor}</span>
+                <span class="categoria">📂 {titulo_categoria}</span>
+                <span>⏱️ {random.randint(4, 8)} min de leitura</span>
+            </div>
+            
+            <h1 id="introducao">{titulo}</h1>
+            <img src="{imagem}" alt="{nome}" class="imagem-destaque" loading="lazy">
+            
+            {conteudo_com_marcadores}
+            
+            {cta_html}
+            
+            <div style="margin-top:25px;padding-top:15px;border-top:1px solid var(--fundo);">
+                <p><strong>{t['compartilhar']}:</strong>
+                <a href="https://wa.me/?text={titulo} - {url}" target="_blank" style="color:var(--whatsapp);font-weight:600;text-decoration:none;">WhatsApp</a> |
+                <a href="https://www.facebook.com/sharer/sharer.php?u={url}" target="_blank" style="color:#1877f2;font-weight:600;text-decoration:none;">Facebook</a> |
+                <a href="https://twitter.com/intent/tweet?text={titulo}&url={url}" target="_blank" style="color:#000;font-weight:600;text-decoration:none;">Twitter</a>
+                </p>
+            </div>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="widget">
+                <h3>📚 {t['leia_tambem']}</h3>
+                <ul>
+                    {artigos_relacionados}
+                </ul>
+            </div>
+        </aside>
+    </main>
+    {self.get_footer(idioma)}
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>"""
+        
+        pasta.mkdir(parents=True, exist_ok=True)
+        caminho = pasta / "index.html"
+        with open(caminho, 'w', encoding='utf-8') as f:
+            f.write(html)
+        
+        artigo_data['status'] = 'publicado'
+        if not artigo_data.get('data_publicacao'):
+            artigo_data['data_publicacao'] = datetime.now().strftime("%Y-%m-%d")
+        if not artigo_data.get('autor'):
+            artigo_data['autor'] = self.config.get('autor', 'Autor')
+            
+        artigos = self.ler_csv(idioma)
+        for a in artigos:
+            if a.get('artigo') == nome:
+                a['status'] = 'publicado'
+                if not a.get('data_publicacao'):
+                    a['data_publicacao'] = datetime.now().strftime("%Y-%m-%d")
+                if not a.get('autor'):
+                    a['autor'] = self.config.get('autor', 'Autor')
+                break
+        self.salvar_csv(artigos, idioma)
+        
+        self.criar_pagina_categoria(categoria, idioma)
+        
+        print(f"   ✅ Salvo: docs/{idioma}/{categoria_traduzida}/{slug}/index.html")
+        return caminho
+    
+    def _atualizar_head_artigo(self, caminho, artigo_data, idioma):
+        """ATUALIZA O HEAD DE UM ARTIGO EXISTENTE SEM MEXER NO CONTEÚDO"""
+        try:
+            with open(caminho, 'r', encoding='utf-8') as f:
+                html_existente = f.read()
+            
+            nome = artigo_data.get('artigo', '')
+            descricao = artigo_data.get('descricao', f"Review completo de {nome}")
+            categoria = artigo_data.get('categoria', 'geral')
+            categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+            slug = self.criar_slug(nome)
+            url = f"{self.config.get('url_base', '')}/{idioma}/{categoria_traduzida}/{slug}/"
+            imagem = self.gerar_imagem(nome, categoria)
+            
+            titulo_map = {
+                'review': f"{nome} - {self.t['review']}",
+                'guia': f"Guia Completo: {nome}",
+                'lista': f"Lista: {nome}",
+                'tutorial': f"Tutorial: {nome}",
+                'comparativo': f"Comparativo: {nome}",
+                'artigo': f"{nome} - {self.t['review']}"
+            }
+            titulo = titulo_map.get(artigo_data.get('tipo', 'review'), f"{nome} - {self.t['review']}")
+            
+            novo_head = self.get_head(titulo, descricao, url, imagem)
+            
+            # Substitui o head antigo pelo novo
+            html_novo = re.sub(
+                r'<head>.*?</head>',
+                f'<head>\n{novo_head}\n</head>',
+                html_existente,
+                flags=re.DOTALL
+            )
+            
+            if html_novo != html_existente:
+                with open(caminho, 'w', encoding='utf-8') as f:
+                    f.write(html_novo)
+                print(f"   ✅ HEAD atualizado: {nome}")
+            else:
+                print(f"   ⚠️ Não foi possível atualizar HEAD de: {nome}")
+                
+        except Exception as e:
+            print(f"   ⚠️ Erro ao atualizar HEAD: {e}")
+    
+    def get_artigos_relacionados(self, categoria_atual, slug_atual, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado or self.idioma_padrao
+        
+        artigos = self.get_artigos_publicados(idioma)
+        relacionados = []
+        for a in artigos:
+            if a['slug'] != slug_atual:
+                relacionados.append(a)
+        
+        if not relacionados:
+            return '<li>Nenhum artigo relacionado</li>'
+        
+        relacionados = relacionados[:4]
+        html = ""
+        for a in relacionados:
+            cat_traduzida = self.get_categoria_traduzida(a['categoria'], idioma)
+            html += f'<li><a href="/{idioma}/{cat_traduzida}/{a["slug"]}/">{a["nome"]}</a></li>\n'
+        
+        return html
+    
+    # ==================== SITEMAP ====================
+    
+    def criar_sitemap(self):
+        print("\n🗺️ GERANDO SITEMAPS POR IDIOMA")
+        print("-" * 40)
+        
+        base_url = self.config.get('url_base', '')
+        sitemaps_idiomas = []
+        
+        for idioma_info in self.config.get('idiomas', []):
+            idioma = idioma_info['codigo']
+            pasta_idioma = self.docs / idioma
+            
+            pasta_idioma.mkdir(parents=True, exist_ok=True)
+            
+            sitemap_path = pasta_idioma / "sitemap.xml"
+            urlset = ET.Element('urlset')
+            urlset.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
+            
+            paginas = [
+                ('', 1.0),
+                ('sobre.html', 0.5),
+                ('contato.html', 0.5),
+                ('politica-privacidade.html', 0.3),
+                ('cookies.html', 0.3),
+            ]
+            
+            for pagina, prioridade in paginas:
+                url_elem = ET.SubElement(urlset, 'url')
+                loc = ET.SubElement(url_elem, 'loc')
+                loc.text = f"{base_url}/{idioma}/{pagina}" if pagina else f"{base_url}/{idioma}/"
+                lastmod = ET.SubElement(url_elem, 'lastmod')
+                lastmod.text = datetime.now().strftime('%Y-%m-%d')
+                changefreq = ET.SubElement(url_elem, 'changefreq')
+                changefreq.text = 'monthly'
+                priority = ET.SubElement(url_elem, 'priority')
+                priority.text = str(prioridade)
+            
+            artigos = self.get_artigos_publicados(idioma)
+            for a in artigos:
+                cat_traduzida = self.get_categoria_traduzida(a['categoria'], idioma)
+                url_elem = ET.SubElement(urlset, 'url')
+                loc = ET.SubElement(url_elem, 'loc')
+                loc.text = f"{base_url}/{idioma}/{cat_traduzida}/{a['slug']}/"
+                lastmod = ET.SubElement(url_elem, 'lastmod')
+                lastmod.text = datetime.now().strftime('%Y-%m-%d')
+                changefreq = ET.SubElement(url_elem, 'changefreq')
+                changefreq.text = 'weekly'
+                priority = ET.SubElement(url_elem, 'priority')
+                priority.text = '0.7'
+            
+            xml_str = ET.tostring(urlset, encoding='unicode')
+            xml_pretty = minidom.parseString(xml_str).toprettyxml(indent="  ")
+            with open(sitemap_path, 'w', encoding='utf-8') as f:
+                f.write(xml_pretty)
+            
+            print(f"   ✅ Sitemap gerado: {idioma}/sitemap.xml ({len(artigos)} artigos)")
+            sitemaps_idiomas.append(f"{base_url}/{idioma}/sitemap.xml")
+        
+        if sitemaps_idiomas:
+            sitemap_index = self.docs / "sitemap.xml"
+            index = ET.Element('sitemapindex')
+            index.set('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
+            
+            for sitemap_url in sitemaps_idiomas:
+                sitemap_elem = ET.SubElement(index, 'sitemap')
+                loc = ET.SubElement(sitemap_elem, 'loc')
+                loc.text = sitemap_url
+            
+            xml_str = ET.tostring(index, encoding='unicode')
+            xml_pretty = minidom.parseString(xml_str).toprettyxml(indent="  ")
+            with open(sitemap_index, 'w', encoding='utf-8') as f:
+                f.write(xml_pretty)
+            
+            print(f"\n   ✅ Sitemap principal criado: sitemap.xml (aponta para {len(sitemaps_idiomas)} idiomas)")
+        
+        robots_path = self.docs / "robots.txt"
+        with open(robots_path, 'w', encoding='utf-8') as f:
+            f.write("User-agent: *\n")
+            f.write("Allow: /\n")
+            f.write("Disallow: /assets/\n")
+            f.write("Disallow: /404.html\n\n")
+            
+            for sitemap_url in sitemaps_idiomas:
+                f.write(f"Sitemap: {sitemap_url}\n")
+            
+            print(f"   ✅ Robots.txt atualizado com {len(sitemaps_idiomas)} sitemaps")
+    
+    # ==================== TRADUÇÃO ====================
+    
+    def traduzir_artigo(self, html, titulo, idioma_destino):
+        if not self.ia_api_key:
+            print("   ⚠️ IA não configurada. Tradução cancelada.")
+            return None
+
+        mapa_idiomas = {
+            'en': 'inglês',
+            'es': 'espanhol'
+        }
+        idioma_nome = mapa_idiomas.get(idioma_destino, 'inglês')
+
+        prompt = f"""
+        Traduza este artigo de português para {idioma_nome}.
+        Mantenha TODAS as tags HTML, classes, ids e links.
+        Não adicione nada além da tradução.
+
+        Título original: {titulo}
+
+        Conteúdo HTML:
+        {html}
+        """
+
+        try:
+            headers = {"Authorization": f"Bearer {self.ia_api_key}", "Content-Type": "application/json"}
+            data = {
+                "model": "deepseek/deepseek-chat",
+                "messages": [
+                    {"role": "system", "content": f"Você é um tradutor profissional para {idioma_nome}."},
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": 6000,
+                "temperature": 0.5
+            }
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=data,
+                timeout=120
+            )
+            if response.status_code == 200:
+                traduzido = response.json()["choices"][0]["message"]["content"]
+                traduzido = re.sub(r'```(?:html)?\s*', '', traduzido)
+                traduzido = re.sub(r'\s*```', '', traduzido)
+                return traduzido
+            else:
+                print(f"   ⚠️ Erro na tradução: {response.status_code}")
+                return None
+        except Exception as e:
+            print(f"   ⚠️ Erro na tradução: {e}")
+            return None
+
+    def traduzir_titulo(self, titulo, idioma_destino):
+        mapa_titulos = {
+            'en': {
+                'Bowl de Quinoa com Legumes Assados': 'Quinoa Bowl with Roasted Vegetables',
+                'Sopa de Abóbora com Gengibre': 'Pumpkin Soup with Ginger',
+                'Salada de Quinoa com Frango Grelhado': 'Quinoa Salad with Grilled Chicken',
+                'Overnight Oats de Mirtilo e Chia': 'Overnight Oats with Blueberry and Chia',
+                'Guia Completo da Dieta Mediterrânea': 'Complete Guide to the Mediterranean Diet',
+                'O que Comer Antes e Depois do Treino': 'What to Eat Before and After Workout',
+                '10 Alimentos Ricos em Fibras para o Dia a Dia': '10 High-Fiber Foods for Everyday',
+                'Vitaminas e Minerais Essenciais para o Corpo': 'Essential Vitamins and Minerals for the Body',
+                '5 Hábitos de Pessoas Centenárias': '5 Habits of Centenarians',
+                'Como Reduzir o Estresse em 10 Minutos por Dia': 'How to Reduce Stress in 10 Minutes a Day',
+                'Rotina Matinal para uma Vida Mais Saudável': 'Morning Routine for a Healthier Life',
+                'Mindfulness: O Guia para Iniciantes': 'Mindfulness: The Beginner\'s Guide',
+                'Hábitos de Longevidade das Zonas Azuis': 'Longevity Habits from the Blue Zones',
+                'Alimentação Antienvelhecimento: O que Comer': 'Anti-Aging Nutrition: What to Eat',
+                'Exercícios para a Terceira Idade': 'Exercises for Seniors',
+                'Como o Sono Afeta a Longevidade': 'How Sleep Affects Longevity',
+                'Guia Completo para Emagrecer com Saúde': 'Complete Guide to Healthy Weight Loss',
+                '5 Exercícios para Fazer em Casa Sem Equipamentos': '5 Home Workouts Without Equipment',
+                'Como Manter a Motivação para Emagrecer': 'How to Stay Motivated to Lose Weight',
+                'Receitas Low-Carb para o Dia a Dia': 'Low-Carb Recipes for Everyday'
+            },
+            'es': {
+                'Bowl de Quinoa com Legumes Assados': 'Bowl de Quinoa con Verduras Asadas',
+                'Sopa de Abóbora com Gengibre': 'Sopa de Calabaza con Jengibre',
+                'Salada de Quinoa com Frango Grelhado': 'Ensalada de Quinoa con Pollo a la Parrilla',
+                'Overnight Oats de Mirtilo e Chia': 'Avena Nocturna con Arándanos y Chía',
+                'Guia Completo da Dieta Mediterrânea': 'Guía Completa de la Dieta Mediterránea',
+                'O que Comer Antes e Depois do Treino': 'Qué Comer Antes y Después del Entreno',
+                '10 Alimentos Ricos em Fibras para o Dia a Dia': '10 Alimentos Ricos en Fibra para el Día a Día',
+                'Vitaminas e Minerais Essenciais para o Corpo': 'Vitaminas y Minerales Esenciales para el Cuerpo',
+                '5 Hábitos de Pessoas Centenárias': '5 Hábitos de Personas Centenarias',
+                'Como Reduzir o Estresse em 10 Minutos por Dia': 'Cómo Reducir el Estrés en 10 Minutos al Día',
+                'Rotina Matinal para uma Vida Mais Saudável': 'Rutina Matutina para una Vida Más Saludable',
+                'Mindfulness: O Guia para Iniciantes': 'Mindfulness: La Guía para Principiantes',
+                'Hábitos de Longevidade das Zonas Azuis': 'Hábitos de Longevidad de las Zonas Azules',
+                'Alimentação Antienvelhecimento: O que Comer': 'Alimentación Antienvejecimiento: Qué Comer',
+                'Exercícios para a Terceira Idade': 'Ejercicios para la Tercera Edad',
+                'Como o Sono Afeta a Longevidade': 'Cómo el Sueño Afecta la Longevidad',
+                'Guia Completo para Emagrecer com Saúde': 'Guía Completa para Adelgazar con Salud',
+                '5 Exercícios para Fazer em Casa Sem Equipamentos': '5 Ejercicios para Hacer en Casa Sin Equipamiento',
+                'Como Manter a Motivação para Emagrecer': 'Cómo Mantener la Motivación para Adelgazar',
+                'Receitas Low-Carb para o Dia a Dia': 'Recetas Low-Carb para el Día a Día'
+            }
+        }
+        return mapa_titulos.get(idioma_destino, {}).get(titulo, titulo)
+
+    def publicar_com_traducao(self):
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma_pt = 'pt'
+        artigos_pt = self.ler_csv(idioma_pt)
+        
+        publicados_pt = []
+        for a in artigos_pt:
+            if a.get('status', 'rascunho').lower() == 'publicado':
+                publicados_pt.append(a)
+        
+        if not publicados_pt:
+            print("\n📭 Nenhum artigo publicado em PT para traduzir.")
+            print("   Publique primeiro os artigos em PT (opção 3 ou 5)")
+            input("\nPressione Enter...")
+            return
+        
+        print("\n📋 ARTIGOS PUBLICADOS EM PT (disponíveis para tradução):")
+        print("-" * 70)
+        
+        artigos_en = self.ler_csv('en')
+        artigos_es = self.ler_csv('es')
+        
+        titulos_en = {a.get('artigo', '').strip() for a in artigos_en if a.get('status') == 'publicado'}
+        titulos_es = {a.get('artigo', '').strip() for a in artigos_es if a.get('status') == 'publicado'}
+        
+        traducao_en = {
+            'Bowl de Quinoa com Legumes Assados': 'Quinoa Bowl with Roasted Vegetables',
+            'Sopa de Abóbora com Gengibre': 'Pumpkin Soup with Ginger',
+            'Salada de Quinoa com Frango Grelhado': 'Quinoa Salad with Grilled Chicken',
+            'Overnight Oats de Mirtilo e Chia': 'Overnight Oats with Blueberry and Chia',
+            'Guia Completo da Dieta Mediterrânea': 'Complete Guide to the Mediterranean Diet',
+            'O que Comer Antes e Depois do Treino': 'What to Eat Before and After Workout',
+            '10 Alimentos Ricos em Fibras para o Dia a Dia': '10 High-Fiber Foods for Everyday',
+            'Vitaminas e Minerais Essenciais para o Corpo': 'Essential Vitamins and Minerals for the Body',
+            '5 Hábitos de Pessoas Centenárias': '5 Habits of Centenarians',
+            'Como Reduzir o Estresse em 10 Minutos por Dia': 'How to Reduce Stress in 10 Minutes a Day',
+            'Rotina Matinal para uma Vida Mais Saudável': 'Morning Routine for a Healthier Life',
+            'Mindfulness: O Guia para Iniciantes': 'Mindfulness: The Beginner\'s Guide',
+            'Hábitos de Longevidade das Zonas Azuis': 'Longevity Habits from the Blue Zones',
+            'Alimentação Antienvelhecimento: O que Comer': 'Anti-Aging Nutrition: What to Eat',
+            'Exercícios para a Terceira Idade': 'Exercises for Seniors',
+            'Como o Sono Afeta a Longevidade': 'How Sleep Affects Longevity',
+            'Guia Completo para Emagrecer com Saúde': 'Complete Guide to Healthy Weight Loss',
+            '5 Exercícios para Fazer em Casa Sem Equipamentos': '5 Home Workouts Without Equipment',
+            'Como Manter a Motivação para Emagrecer': 'How to Stay Motivated to Lose Weight',
+            'Receitas Low-Carb para o Dia a Dia': 'Low-Carb Recipes for Everyday'
+        }
+        
+        traducao_es = {
+            'Bowl de Quinoa com Legumes Assados': 'Bowl de Quinoa con Verduras Asadas',
+            'Sopa de Abóbora com Gengibre': 'Sopa de Calabaza con Jengibre',
+            'Salada de Quinoa com Frango Grelhado': 'Ensalada de Quinoa con Pollo a la Parrilla',
+            'Overnight Oats de Mirtilo e Chia': 'Avena Nocturna con Arándanos y Chía',
+            'Guia Completo da Dieta Mediterrânea': 'Guía Completa de la Dieta Mediterránea',
+            'O que Comer Antes e Depois do Treino': 'Qué Comer Antes y Después del Entreno',
+            '10 Alimentos Ricos em Fibras para o Dia a Dia': '10 Alimentos Ricos en Fibra para el Día a Día',
+            'Vitaminas e Minerais Essenciais para o Corpo': 'Vitaminas y Minerales Esenciales para el Cuerpo',
+            '5 Hábitos de Pessoas Centenárias': '5 Hábitos de Personas Centenarias',
+            'Como Reduzir o Estresse em 10 Minutos por Dia': 'Cómo Reducir el Estrés en 10 Minutos al Día',
+            'Rotina Matinal para uma Vida Mais Saudável': 'Rutina Matutina para una Vida Más Saludable',
+            'Mindfulness: O Guia para Iniciantes': 'Mindfulness: La Guía para Principiantes',
+            'Hábitos de Longevidade das Zonas Azuis': 'Hábitos de Longevidad de las Zonas Azules',
+            'Alimentação Antienvelhecimento: O que Comer': 'Alimentación Antienvejecimiento: Qué Comer',
+            'Exercícios para a Terceira Idade': 'Ejercicios para la Tercera Edad',
+            'Como o Sono Afeta a Longevidade': 'Cómo el Sueño Afecta la Longevidad',
+            'Guia Completo para Emagrecer com Saúde': 'Guía Completa para Adelgazar con Salud',
+            '5 Exercícios para Fazer em Casa Sem Equipamentos': '5 Ejercicios para Hacer en Casa Sin Equipamiento',
+            'Como Manter a Motivação para Emagrecer': 'Cómo Mantener la Motivación para Adelgazar',
+            'Receitas Low-Carb para o Dia a Dia': 'Recetas Low-Carb para el Día a Día'
+        }
+        
+        for i, a in enumerate(publicados_pt, 1):
+            titulo = a.get('artigo', 'Sem nome')
+            categoria = self.formatar_titulo_categoria(a.get('categoria', 'geral'))
+            
+            titulo_en = traducao_en.get(titulo, titulo)
+            existe_en = titulo_en in titulos_en
+            
+            titulo_es = traducao_es.get(titulo, titulo)
+            existe_es = titulo_es in titulos_es
+            
+            status_en = "✅ EN publicado" if existe_en else "⏳ EN pendente"
+            status_es = "✅ ES publicado" if existe_es else "⏳ ES pendente"
+            
+            print(f"  {i:2}. {titulo}")
+            print(f"      📂 {categoria}")
+            print(f"      {status_en} | {status_es}")
+            print()
+        
+        print("-" * 70)
+        
+        escolha = self.ler_numero("\nEscolha o número do artigo para traduzir: ", 1, len(publicados_pt))
+        if escolha is None:
+            return
+        
+        artigo_pt = publicados_pt[escolha - 1]
+        titulo_pt = artigo_pt.get('artigo', '')
+        categoria = artigo_pt.get('categoria', 'geral')
+        
+        print(f"\n📝 Traduzindo: {titulo_pt}")
+        
+        slug_pt = self.criar_slug(titulo_pt)
+        categoria_traduzida_pt = self.get_categoria_traduzida(categoria, 'pt')
+        caminho_pt = self.docs / 'pt' / categoria_traduzida_pt / slug_pt / "index.html"
+        
+        if not caminho_pt.exists():
+            print(f"   ❌ Artigo em PT não encontrado em: {caminho_pt}")
+            print("   Publique primeiro o artigo em PT (opção 3)")
+            input("\nPressione Enter...")
+            return
+        
+        print("\n🌐 Quais idiomas deseja traduzir?")
+        traduzir_en = self.ler_sim_nao("   🔹 Gerar versão em INGLÊS? (s/n): ")
+        traduzir_es = self.ler_sim_nao("   🔸 Gerar versão em ESPANHOL? (s/n): ")
+        
+        if not traduzir_en and not traduzir_es:
+            print("\n✅ Nenhuma tradução solicitada.")
+            input("\nPressione Enter...")
+            return
+        
+        with open(caminho_pt, 'r', encoding='utf-8') as f:
+            html_pt = f.read()
+        
+        for idioma in ['en', 'es']:
+            if (idioma == 'en' and not traduzir_en) or (idioma == 'es' and not traduzir_es):
+                continue
+            
+            print(f"\n🔄 Traduzindo para {idioma.upper()}...")
+            
+            if idioma == 'en':
+                titulo_traduzido = traducao_en.get(titulo_pt, titulo_pt)
+            else:
+                titulo_traduzido = traducao_es.get(titulo_pt, titulo_pt)
+            
+            artigos_idioma = self.ler_csv(idioma)
+            existe = False
+            for a in artigos_idioma:
+                if a.get('artigo') == titulo_traduzido and a.get('status') == 'publicado':
+                    existe = True
+                    break
+            
+            if existe:
+                print(f"   ⏭️ {idioma.upper()} já existe, pulando...")
+                continue
+            
+            html_traduzido = self.traduzir_artigo(html_pt, titulo_pt, idioma)
+            
+            if not html_traduzido:
+                print(f"   ⚠️ Falha na tradução para {idioma.upper()}")
+                continue
+            
+            artigo_traduzido = {
+                'artigo': titulo_traduzido,
+                'links_afiliados': artigo_pt.get('links_afiliados', '#'),
+                'status': 'publicado',
+                'categoria': categoria,
+                'palavras_chave': artigo_pt.get('palavras_chave', ''),
+                'descricao': artigo_pt.get('descricao', ''),
+                'tipo': artigo_pt.get('tipo', 'review'),
+                'data_publicacao': datetime.now().strftime("%Y-%m-%d"),
+                'autor': self.config.get('autor', 'Autor')
+            }
+            
+            slug_traduzido = self.criar_slug(titulo_traduzido)
+            categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+            pasta_traduzida = self.docs / idioma / categoria_traduzida / slug_traduzido
+            pasta_traduzida.mkdir(parents=True, exist_ok=True)
+            
+            caminho_traduzido = pasta_traduzida / "index.html"
+            
+            html_traduzido_ajustado = html_traduzido
+            html_traduzido_ajustado = html_traduzido_ajustado.replace(f'/{categoria}/', f'/{idioma}/{categoria_traduzida}/')
+            html_traduzido_ajustado = html_traduzido_ajustado.replace(f'/pt/', f'/{idioma}/')
+            
+            with open(caminho_traduzido, 'w', encoding='utf-8') as f:
+                f.write(html_traduzido_ajustado)
+            
+            print(f"   ✅ Versão em {idioma.upper()} publicada: {caminho_traduzido}")
+            
+            artigos_idioma.append(artigo_traduzido)
+            self.salvar_csv(artigos_idioma, idioma)
+        
+        for idioma in ['pt', 'en', 'es']:
+            if os.path.exists(self.docs / idioma):
+                self.criar_index(idioma=idioma)
+                self.criar_todas_categorias(idioma=idioma)
+        
+        self.criar_sitemap()
+        self.criar_index_raiz()
+        
+        print("\n✅ Tradução concluída com sucesso!")
+        input("\nPressione Enter...")
+
+    # ==================== SINCRONIZAR ====================
+    
+    def sincronizar_agora(self, regenerar_artigos=False, manter_conteudo=True):
+        """Sincroniza e REGENERA todas as páginas com os templates atuais"""
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma = self.idioma_selecionado
+        print(f"\n🔄 SINCRONIZANDO E REGENERANDO ({idioma.upper()})")
+        print("=" * 40)
+        
+        # 1. Sincroniza status
+        self.sincronizar_status(mostrar_confirmacao=True, idioma=idioma)
+        
+        # 2. REGENERA APENAS PÁGINAS
+        print(f"\n🔄 Regenerando páginas com os templates atuais...")
+        self.criar_index(idioma=idioma)
+        self.criar_todas_categorias(idioma=idioma)
+        self.criar_sitemap()
+        self.criar_index_raiz()
+        
+        # 3. ATUALIZA HEAD DE TODOS OS ARTIGOS
+        print(f"\n🔄 Atualizando HEAD de todos os artigos com templates atuais...")
+        artigos = self.get_artigos_publicados(idioma)
+        if artigos:
+            csv_artigos = self.ler_csv(idioma)
+            for a in artigos:
+                for csv_a in csv_artigos:
+                    if self.criar_slug(csv_a.get('artigo', '')) == a['slug']:
+                        print(f"   ♻️ Atualizando HEAD: {csv_a.get('artigo')}")
+                        self.criar_artigo(csv_a, forcar=True, revisar=False, idioma=idioma, forcar_head=True)
+                        break
+            print(f"   ✅ HEAD de {len(artigos)} artigos atualizado")
+        else:
+            print("\n📭 Nenhum artigo para atualizar.")
+        
+        print("\n✅ Sincronização concluída!")
+        print("   📁 HEAD de todos os artigos atualizados com os templates atuais.")
+        input("\nPressione Enter...")
+    
+    def sincronizar_status(self, mostrar_confirmacao=True, idioma=None):
+        if idioma is None:
+            idioma = self.idioma_selecionado
+        
+        if idioma is None:
+            return False
+        
+        artigos = self.ler_csv(idioma)
+        alterado = False
+        afetados = []
+        
+        for a in artigos:
+            if a.get('status') == 'publicado':
+                slug = self.criar_slug(a.get('artigo', ''))
+                categoria = a.get('categoria', 'geral')
+                categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+                if not (self.docs / idioma / categoria_traduzida / slug / "index.html").exists():
+                    afetados.append(a.get('artigo'))
+                    a['status'] = 'rascunho'
+                    alterado = True
+        
+        if alterado and mostrar_confirmacao:
+            print(f"\n⚠️ {len(afetados)} artigos serão voltados para rascunho ({idioma.upper()}):")
+            for nome in afetados:
+                print(f"   🔄 {nome}")
+            
+            if not self.ler_sim_nao("\nContinuar? (s/n): "):
+                return False
+        
+        if alterado:
+            self.salvar_csv(artigos, idioma)
+            print(f"✅ Status sincronizado! ({idioma.upper()})")
+        
+        return alterado
+    
+    # ==================== MENU ====================
+    
+    def selecionar_idioma(self):
+        print("\n" + "=" * 60)
+        print("🌐 SELECIONE O IDIOMA")
+        print("=" * 60)
+        
+        idiomas = self.config.get('idiomas', [{'codigo': 'pt', 'nome': 'Português'}])
+        for i, lang in enumerate(idiomas, 1):
+            print(f"  {i}. {lang.get('nome', lang.get('codigo', '??').upper())}")
+        
+        print("  0. Sair")
+        print("=" * 60)
+        
+        escolha = self.ler_numero("\n👉 Escolha: ", 0, len(idiomas))
+        if escolha is None or escolha == 0:
+            return None
+        
+        idioma_selecionado = idiomas[escolha - 1]['codigo']
+        self.idioma_selecionado = idioma_selecionado
+        self.t = IDIOMAS.get(self.idioma_selecionado, IDIOMAS['pt'])
+        
+        print(f"\n✅ Idioma selecionado: {idioma_selecionado.upper()}")
+        return idioma_selecionado
+    
+    def mostrar_painel(self):
+        if self.idioma_selecionado is None:
+            return
+        
+        idioma = self.idioma_selecionado
+        artigos = self.ler_csv(idioma)
+        total = len(artigos)
+        
+        publicados = 0
+        rascunhos = 0
+        categorias = set()
+        for a in artigos:
+            status = a.get('status', 'rascunho').lower()
+            if status == 'publicado':
+                publicados += 1
+            else:
+                rascunhos += 1
+            cat = a.get('categoria', 'geral')
+            if cat:
+                categorias.add(cat)
+        
+        print("\n" + "=" * 70)
+        print(f"  {self.config.get('icone', '📝')} {self.config.get('nome', 'Blog')} - {idioma.upper()}")
+        print("=" * 70)
+        print(f"  📊 {total} artigos | ✅ {publicados} publicados | ⏳ {rascunhos} rascunhos")
+        print(f"  🏷️  {len(categorias)} categorias: {', '.join([self.formatar_titulo_categoria(c) for c in list(categorias)[:5]])}")
+        print("=" * 70)
+    
+    def publicar_um(self):
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma = self.idioma_selecionado
+        self.sincronizar_status(mostrar_confirmacao=False, idioma=idioma)
+        
+        artigos = self.ler_csv(idioma)
+        pendentes = [a for a in artigos if a.get('status', 'rascunho').lower() != 'publicado']
+        
+        if not pendentes:
+            print(f"\n✅ Nenhum artigo pendente para publicar ({idioma.upper()})")
+            input("\nPressione Enter...")
+            return
+        
+        print(f"\n📋 RASCUNHOS ({idioma.upper()}):")
+        print("-" * 60)
+        for i, a in enumerate(pendentes, 1):
+            titulo_cat = self.formatar_titulo_categoria(a.get('categoria', 'geral'))
+            print(f"  {i}. {a.get('artigo', 'Sem nome')} ({titulo_cat})")
+        print("-" * 60)
+        
+        escolha = self.ler_numero("\nEscolha o número do artigo: ", 1, len(pendentes))
+        if escolha is None:
+            return
+        
+        a = pendentes[escolha - 1]
+        titulo_cat = self.formatar_titulo_categoria(a.get('categoria', 'geral'))
+        
+        print("\n" + "=" * 60)
+        print("📝 PREVIEW DO ARTIGO:")
+        print("=" * 60)
+        print(f"  Título: {a.get('artigo')}")
+        print(f"  Categoria: {titulo_cat}")
+        print(f"  Palavras-chave: {a.get('palavras_chave', '')}")
+        print(f"  Descrição: {a.get('descricao', '')}")
+        print(f"  Tipo: {a.get('tipo', 'review')}")
+        print(f"  Data: {a.get('data_publicacao', 'Não definida')}")
+        print("=" * 60)
+        
+        if not self.ler_sim_nao("\nPublicar este artigo? (s/n): "):
+            return
+        
+        self.criar_artigo(a, forcar=True, revisar=True, idioma=idioma, forcar_head=True)
+        self.criar_index(idioma=idioma)
+        self.criar_todas_categorias(idioma=idioma)
+        self.criar_sitemap()
+        self.criar_index_raiz()
+        print("\n✅ Publicado!")
+        input("\nPressione Enter...")
+    
+    def publicar_lotes(self):
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma = self.idioma_selecionado
+        print(f"\n📦 PUBLICAR EM LOTES ({idioma.upper()})")
+        print("=" * 50)
+        
+        artigos = self.ler_csv(idioma)
+        pendentes = [a for a in artigos if a.get('status', 'rascunho').lower() != 'publicado']
+        
+        if not pendentes:
+            print(f"✅ Nenhum artigo pendente para publicar ({idioma.upper()})")
+            input("\nPressione Enter...")
+            return
+        
+        categorias = {}
+        for a in pendentes:
+            cat = a.get('categoria', 'geral')
+            if cat not in categorias:
+                categorias[cat] = []
+            categorias[cat].append(a)
+        
+        print(f"\n📊 {len(pendentes)} artigos disponíveis ({idioma.upper()})")
+        print("\n📂 CATEGORIAS DISPONÍVEIS:")
+        cats = list(categorias.keys())
+        for i, cat in enumerate(cats, 1):
+            titulo = self.formatar_titulo_categoria(cat)
+            print(f"  {i}. {titulo} ({len(categorias[cat])} artigos)")
+        
+        print("\nEscolha uma opção:")
+        print("  [0] Publicar de todas as categorias")
+        for i, cat in enumerate(cats, 1):
+            titulo = self.formatar_titulo_categoria(cat)
+            print(f"  [{i}] Publicar apenas da categoria {titulo}")
+        
+        opcao = input("\n➡️  ").strip()
+        
+        if opcao == '0':
+            artigos_selecionados = pendentes
+        elif opcao.isdigit() and 1 <= int(opcao) <= len(cats):
+            cat_selecionada = cats[int(opcao) - 1]
+            artigos_selecionados = categorias[cat_selecionada]
+            titulo_cat = self.formatar_titulo_categoria(cat_selecionada)
+            print(f"\n📋 ARTIGOS DA CATEGORIA {titulo_cat.upper()}:")
+            for i, a in enumerate(artigos_selecionados, 1):
+                print(f"  {i}. {a.get('artigo', 'Sem nome')}")
+        else:
+            print("❌ Opção inválida")
+            input("\nPressione Enter...")
+            return
+        
+        if not artigos_selecionados:
+            print("❌ Nenhum artigo selecionado")
+            input("\nPressione Enter...")
+            return
+        
+        print(f"\n🎯 Quantos artigos publicar? (máx {len(artigos_selecionados)})")
+        print("   (Digite um número ou 't' para todos)")
+        
+        opcao_qtd = input("\n➡️  ").strip().lower()
+        
+        if opcao_qtd == 't':
+            quantidade = len(artigos_selecionados)
+        else:
+            try:
+                quantidade = int(opcao_qtd)
+                if quantidade <= 0:
+                    print("❌ Número inválido")
+                    input("\nPressione Enter...")
+                    return
+                quantidade = min(quantidade, len(artigos_selecionados))
+            except ValueError:
+                print("❌ Opção inválida")
+                input("\nPressione Enter...")
+                return
+        
+        publicar_agora = artigos_selecionados[:quantidade]
+        
+        print(f"\n📦 Publicando {len(publicar_agora)} artigos...")
+        print("-" * 40)
+        
+        for i, a in enumerate(publicar_agora, 1):
+            print(f"\n[{i}/{len(publicar_agora)}] Publicando: {a.get('artigo')}")
+            
+            data_pub = (datetime.now() + timedelta(days=i-1)).strftime("%Y-%m-%d")
+            a['data_publicacao'] = data_pub
+            
+            self.criar_artigo(a, revisar=True, idioma=idioma, forcar_head=True)
+            
+            if i < len(publicar_agora):
+                espera = random.randint(2, 5)
+                print(f"   ⏳ Aguardando {espera}s...")
+                time.sleep(espera)
+        
+        self.criar_index(idioma=idioma)
+        self.criar_todas_categorias(idioma=idioma)
+        self.criar_sitemap()
+        self.criar_index_raiz()
+        
+        print("\n" + "=" * 40)
+        print(f"✅ {len(publicar_agora)} artigos publicados com sucesso! ({idioma.upper()})")
+        print(f"📊 Restam {len(pendentes) - len(publicar_agora)} artigos pendentes")
+        input("\nPressione Enter...")
+    
+    def ver_artigos(self):
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma = self.idioma_selecionado
+        artigos = self.ler_csv(idioma)
+        
+        if not artigos:
+            print(f"\n📭 Nenhum artigo em {idioma.upper()}")
+            input("\nPressione Enter...")
+            return
+        
+        print(f"\n📋 TODOS OS ARTIGOS ({idioma.upper()})")
+        print("=" * 70)
+        print("-" * 60)
+        for i, a in enumerate(artigos, 1):
+            nome = a.get('artigo', 'Sem nome')[:40]
+            status = a.get('status', 'rascunho')
+            status_icon = "✅" if status == 'publicado' else "⏳"
+            status_text = "Publicado" if status == 'publicado' else "Rascunho"
+            categoria = self.formatar_titulo_categoria(a.get('categoria', 'geral'))[:15]
+            print(f"  {i:2}. {status_icon} {nome:<40} {status_text:<10} {categoria}")
+        
+        input("\nPressione Enter...")
+    
+    def ver_por_categoria(self):
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma = self.idioma_selecionado
+        artigos = self.ler_csv(idioma)
+        
+        if not artigos:
+            print(f"\n📭 Nenhum artigo em {idioma.upper()}")
+            input("\nPressione Enter...")
+            return
+        
+        print(f"\n📂 ARTIGOS POR CATEGORIA ({idioma.upper()})")
+        print("=" * 70)
+        print("-" * 50)
+        
+        categorias = {}
+        for a in artigos:
+            cat = a.get('categoria', 'geral')
+            if cat not in categorias:
+                categorias[cat] = []
+            categorias[cat].append(a)
+        
+        for cat, arts in categorias.items():
+            titulo_cat = self.formatar_titulo_categoria(cat)
+            publicados = sum(1 for a in arts if a.get('status') == 'publicado')
+            print(f"  📂 {titulo_cat}: {publicados}/{len(arts)} publicados")
+        
+        input("\nPressione Enter...")
+    
+    def revisar_artigo(self):
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma = self.idioma_selecionado
+        publicados = self.get_artigos_publicados(idioma)
+        
+        if not publicados:
+            print(f"\n❌ Nenhum artigo publicado em {idioma.upper()}")
+            input("\nPressione Enter...")
+            return
+        
+        print(f"\n📋 PUBLICADOS ({idioma.upper()}):")
+        for i, p in enumerate(publicados, 1):
+            titulo_cat = self.formatar_titulo_categoria(p['categoria'])
+            print(f"   {i}. {p['nome']} ({titulo_cat})")
+        
+        escolha = self.ler_numero("\nNúmero: ", 1, len(publicados))
+        if escolha is None:
+            return
+        
+        slug = publicados[escolha - 1]['slug']
+        nome = publicados[escolha - 1]['nome']
+        categoria = publicados[escolha - 1]['categoria']
+        
+        while True:
+            print(f"\n📝 {nome} ({idioma.upper()})")
+            print("1. 📖 Ver no navegador")
+            print("2. 🔄 Regenerar com IA (com revisão)")
+            print("3. 🗑️ Despublicar (voltar para rascunho)")
+            print("4. ❌ Voltar")
+            
+            opcao = input("Escolha: ").strip()
+            
+            if opcao == "1":
+                categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+                caminho = self.docs / idioma / categoria_traduzida / slug / "index.html"
+                if caminho.exists():
+                    webbrowser.open(str(caminho))
+                else:
+                    print("❌ Arquivo não encontrado!")
+                input("Pressione Enter...")
+            elif opcao == "2":
+                print("\n🔄 Regenerando com revisão...")
+                artigos = self.ler_csv(idioma)
+                link = "https://afiliado.com/produto"
+                for a in artigos:
+                    if self.criar_slug(a.get('artigo', '')) == slug:
+                        link = a.get('links_afiliados', 'https://afiliado.com/produto')
+                        break
+                self.criar_artigo({'artigo': nome, 'links_afiliados': link, 'categoria': categoria}, forcar=True, revisar=True, idioma=idioma, forcar_head=True)
+                self.criar_index(idioma=idioma)
+                print("✅ Regenerado com revisão!")
+                input("Pressione Enter...")
+            elif opcao == "3":
+                if self.ler_sim_nao(f"Despublicar '{nome}'? (s/n): "):
+                    categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+                    pasta = self.docs / idioma / categoria_traduzida / slug
+                    if pasta.exists():
+                        shutil.rmtree(pasta)
+                    artigos = self.ler_csv(idioma)
+                    for a in artigos:
+                        if self.criar_slug(a.get('artigo', '')) == slug:
+                            a['status'] = 'rascunho'
+                            break
+                    self.salvar_csv(artigos, idioma)
+                    self.criar_index(idioma=idioma)
+                    self.criar_todas_categorias(idioma=idioma)
+                    print(f"✅ '{nome}' voltou para rascunho! ({idioma.upper()})")
+                    input("Pressione Enter...")
+                    return
+            elif opcao == "4":
+                return
+    
+    def deletar_artigo(self):
+        if self.idioma_selecionado is None:
+            print("⚠️ Selecione um idioma primeiro!")
+            return
+        
+        idioma = self.idioma_selecionado
+        publicados = self.get_artigos_publicados(idioma)
+        
+        if not publicados:
+            print(f"\n❌ Nenhum artigo em {idioma.upper()}")
+            input("\nPressione Enter...")
+            return
+        
+        print(f"\n🗑️ DELETAR ({idioma.upper()}):")
+        for i, p in enumerate(publicados, 1):
+            titulo_cat = self.formatar_titulo_categoria(p['categoria'])
+            print(f"   {i}. {p['nome']} ({titulo_cat})")
+        
+        escolha = self.ler_numero("\nNúmero: ", 1, len(publicados))
+        if escolha is None:
+            return
+        
+        slug = publicados[escolha - 1]['slug']
+        nome = publicados[escolha - 1]['nome']
+        categoria = publicados[escolha - 1]['categoria']
+        
+        if not self.ler_sim_nao(f"Deletar '{nome}'? (s/n): "):
+            return
+        
+        categoria_traduzida = self.get_categoria_traduzida(categoria, idioma)
+        pasta = self.docs / idioma / categoria_traduzida / slug
+        if pasta.exists():
+            shutil.rmtree(pasta)
+            print(f"   🗑️ Pasta removida: {idioma}/{categoria_traduzida}/{slug}")
+        
+        artigos = self.ler_csv(idioma)
+        for a in artigos:
+            if self.criar_slug(a.get('artigo', '')) == slug:
+                a['status'] = 'rascunho'
+                break
+        self.salvar_csv(artigos, idioma)
+        
+        self.criar_index(idioma=idioma)
+        self.criar_todas_categorias(idioma=idioma)
+        self.criar_sitemap()
+        self.criar_index_raiz()
+        print(f"✅ {nome} deletado! ({idioma.upper()})")
+        input("\nPressione Enter...")
+    
+    def menu(self):
+        while True:
+            if self.idioma_selecionado is None:
+                idioma = self.selecionar_idioma()
+                if idioma is None:
+                    print("\n👋 Até logo!")
+                    break
+                self.idioma_selecionado = idioma
+                self.t = IDIOMAS.get(self.idioma_selecionado, IDIOMAS['pt'])
+            
+            self.mostrar_painel()
+            
+            print(f"\n📝 CONTEÚDO ({self.idioma_selecionado.upper()})")
+            print("  [1] Ver todos os artigos")
+            print("  [2] Ver por categoria")
+            print("  [3] Publicar UM")
+            print("  [4] Publicar com TRADUÇÃO (PT → EN/ES)")
+            print("  [5] Publicar em LOTES")
+            print("  [6] Revisar/Regenerar artigo")
+            
+            print(f"\n🔄 FERRAMENTAS ({self.idioma_selecionado.upper()})")
+            print("  [7] ATUALIZAR TUDO (HEAD + sitemap)")
+            print("  [8] Deletar artigo")
+            
+            print("\n  [9] Trocar idioma")
+            print("  [0] Sair")
+            print("=" * 70)
+            
+            opcao = input("\n🎯 Escolha: ").strip()
+            
+            if opcao == "1":
+                self.ver_artigos()
+            elif opcao == "2":
+                self.ver_por_categoria()
+            elif opcao == "3":
+                self.publicar_um()
+            elif opcao == "4":
+                self.publicar_com_traducao()
+            elif opcao == "5":
+                self.publicar_lotes()
+            elif opcao == "6":
+                self.revisar_artigo()
+            elif opcao == "7":
+                print("\n⚠️ ATENÇÃO: Isso vai ATUALIZAR O HEAD de TODOS os artigos")
+                print("   com os templates atuais, além de regenerar index, categorias e sitemap")
+                print("   NENHUM CONTEÚDO será perdido.")
+                if self.ler_sim_nao("Continuar? (s/n): "):
+                    self.sincronizar_agora(regenerar_artigos=False)
+                    print("\n✅ HEAD de todos os artigos atualizado!")
+                    input("\nPressione Enter...")
+            elif opcao == "8":
+                self.deletar_artigo()
+            elif opcao == "9":
+                self.idioma_selecionado = None
+                self.t = IDIOMAS.get('pt', IDIOMAS['pt'])
+                continue
+            elif opcao == "0":
+                print("\n👋 Até logo!")
+                break
+            else:
+                print("❌ Opção inválida")
+                input("\nPressione Enter...")
+
+if __name__ == "__main__":
+    gerador = Gerador()
+    gerador.menu()

@@ -1,0 +1,20 @@
+Crie uma NOTÍCIA COMPLETA E ATUALIZADA sobre {artigo} em português do Brasil.
+
+NICHO: {categoria}
+TOM: {tom}
+PALAVRAS-CHAVE: {palavras_chave}
+
+ESTRUTURA OBRIGATÓRIA (NOTÍCIA):
+
+1. Título chamativo com <h1> - inclua a palavra-chave e o ano
+2. INTRODUÇÃO (2-3 parágrafos) - apresente o fato principal
+3. O QUE ACONTECEU - detalhes do evento/anúncio/lançamento
+4. CONTEXTO - por que isso é importante para o setor
+5. IMPACTO NO MERCADO - como isso afeta consumidores/empresas
+6. REAÇÕES - o que especialistas e marcas estão dizendo
+7. PRÓXIMOS PASSOS - o que esperar daqui para frente
+8. FAQ com <div class="faq"> e <div class="faq-item">
+9. CONCLUSÃO - resumo e opinião
+
+Use classes: faq, faq-item
+Retorne APENAS HTML válido.
