@@ -2,7 +2,7 @@ name: Publicar Artigos
 
 on:
   schedule:
-    - cron: '0 12 */1 * *'  # A cada 1 dia às 12:00 UTC (07:00 BRT) 
+    - cron: '0 11 */1 * *'  # A cada 1 dia às 11:00 UTC (07:00 BRT) 
   workflow_dispatch:
 
 jobs:
