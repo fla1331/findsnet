@@ -1,0 +1,42 @@
+name: Publicar Artigos
+
+on:
+  schedule:
+    - cron: '40 18 */2 * *'  # A cada 2 dias às 15:40 BRT
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v3
+      
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+      
+      - name: Configurar variáveis de ambiente
+        run: |
+          echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" >> $GITHUB_ENV
+          echo "UNSPLASH_API_KEY=${{ secrets.UNSPLASH_API_KEY }}" >> $GITHUB_ENV
+          echo "PEXELS_API_KEY=${{ secrets.PEXELS_API_KEY }}" >> $GITHUB_ENV
+          echo "PIXABAY_API_KEY=${{ secrets.PIXABAY_API_KEY }}" >> $GITHUB_ENV
+      
+      - name: Executar o gerador
+        run: python3 gerador.py --auto
+      
+      - name: Enviar a pasta docs para o GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "GitHub Actions"
+          git config.user.email "actions@github.com"
+          git add -f docs/
+          git commit -m "Publicação automática - $(date +'%d/%m/%Y')" || echo "Nada para publicar"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main

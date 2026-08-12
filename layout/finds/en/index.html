@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{NOME_SITE}} - The Best Internet Finds</title>
+  <meta name="description" content="The best internet finds in one place. Selected products at deal prices across electronics, home, fashion, beauty, kids, and deals." />
+  <link rel="canonical" href="https://example.com/en/index.html" />
+  <link rel="alternate" hreflang="pt" href="https://example.com/pt/index.html" />
+  <link rel="alternate" hreflang="en" href="https://example.com/en/index.html" />
+  <link rel="alternate" hreflang="es" href="https://example.com/es/index.html" />
+  <link rel="alternate" hreflang="x-default" href="https://example.com/pt/index.html" />
+  <meta property="og:title" content="{{NOME_SITE}} - The Best Internet Finds" />
+  <meta property="og:description" content="The best internet finds in one place." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="../assets/img/og-default.jpg" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/custom.css" />
+  <script>
+    (function(){try{var t=localStorage.getItem('finds-blog-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">{{ICONE}}</span>
+        <span>{{NOME_SITE}}</span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="categoria.html?cat=eletronicos">Electronics</a></li>
+          <li><a href="categoria.html?cat=casa">Home</a></li>
+          <li><a href="categoria.html?cat=moda">Fashion</a></li>
+          <li><a href="categoria.html?cat=beleza">Beauty</a></li>
+          <li><a href="categoria.html?cat=kids">Kids</a></li>
+          <li><a href="categoria.html?cat=promocoes">Deals</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-selector">
+          <button class="lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="Select language">
+            <span class="lang-flag">🇬🇧</span><span>EN</span><i class="fa-solid fa-chevron-down" style="font-size:0.7rem"></i>
+          </button>
+          <div class="lang-dropdown" role="menu">
+            <a href="../pt/index.html" role="menuitem"><span class="lang-flag">🇧🇷</span> Português</a>
+            <a href="index.html" role="menuitem"><span class="lang-flag">🇬🇧</span> English</a>
+            <a href="../es/index.html" role="menuitem"><span class="lang-flag">🇪🇸</span> Español</a>
+          </div>
+        </div>
+        <button class="theme-toggle" aria-label="Toggle light/dark theme">
+          <i class="fa-solid fa-sun icon-sun"></i>
+          <i class="fa-solid fa-moon icon-moon"></i>
+        </button>
+        <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main-content">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>{{FRASE_HERO}}</h1>
+        <p>{{SLOGAN}}</p>
+        <a href="{{PRIMEIRO_ARTIGO}}" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-tags"></i> View all articles
+        </a>
+      </div>
+    </section>
+
+    <!-- MAIN LAYOUT -->
+    <div class="container section">
+      <div class="layout-with-sidebar">
+        <div>
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Latest Articles</h2>
+              <p class="section-subtitle">The best finds and deals selected for you</p>
+            </div>
+          </div>
+          <div class="card-grid">
+            {{LISTA_CARDS}}
+          </div>
+
+          {{NAVEGACAO}}
+
+          <!-- Newsletter -->
+          <section class="newsletter reveal">
+            <h2>Get the best finds</h2>
+            <p>Subscribe to our newsletter and receive the best deals and finds straight to your inbox.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('input').placeholder='Subscription successful!';">
+              <input type="email" placeholder="your@email.com" aria-label="Email" required />
+              <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Subscribe</button>
+            </form>
+            <p class="newsletter-fallback">No spam. Cancel anytime.</p>
+          </section>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" aria-label="Sidebar">
+          <div class="sidebar-widget reveal">
+            <h3>Related Posts</h3>
+            <ul class="related-list">
+              {{RELACIONADOS_SIDEBAR}}
+            </ul>
+          </div>
+          <div class="sidebar-widget reveal">
+            <h3>Categories</h3>
+            <ul class="category-list">
+              {{CATEGORIAS_SIDEBAR}}
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>{{ICONE}} {{NOME_SITE}}</h3>
+          <p>The best internet finds in one place. Selected products at deal prices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sobre.html">About</a></li>
+            <li><a href="contato.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="politica-de-privacidade.html">Privacy</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Languages</h4>
+          <ul>
+            <li><a href="../pt/index.html">🇧🇷 Português</a></li>
+            <li><a href="index.html">🇬🇧 English</a></li>
+            <li><a href="../es/index.html">🇪🇸 Español</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ANO}} {{NOME_SITE}}. All rights reserved.</p>
+        <p>Made with <i class="fa-solid fa-heart" style="color:#E8510F"></i> for deal hunters</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" role="dialog" aria-label="Cookie notice">
+    <div class="cookie-inner">
+      <p class="cookie-text">We use cookies to improve your experience. Learn more in our <a href="cookies.html">Cookie Policy</a>.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost btn-sm cookie-customize">Customize</button>
+        <button class="btn btn-ghost btn-sm cookie-reject">Reject</button>
+        <button class="btn btn-primary btn-sm cookie-accept">Accept all</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>

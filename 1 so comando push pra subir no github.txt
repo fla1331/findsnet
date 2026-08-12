@@ -1,0 +1,11 @@
+cd ~/Desktop/sites/findsnet
+
+# Remove tudo do Git
+git rm -r --cached .
+git commit -m "Remove todos os arquivos do Git"
+git push
+
+# Adiciona os arquivos corretos
+git add .github/ artigos/ templates/ config.json gerador.py requirements.txt .gitignore
+git commit -m "estrutura"
+git push

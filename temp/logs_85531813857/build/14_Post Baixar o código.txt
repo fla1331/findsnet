@@ -1,0 +1,15 @@
+﻿2026-08-11T20:00:13.5549149Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-08-11T20:00:13.5550463Z Post job cleanup.
+2026-08-11T20:00:13.6252383Z (node:2246) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-08-11T20:00:13.6253241Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-08-11T20:00:13.6288114Z [command]/usr/bin/git version
+2026-08-11T20:00:13.6325530Z git version 2.54.0
+2026-08-11T20:00:13.6365943Z Temporarily overriding HOME='/home/runner/work/_temp/c53ec8ef-3cec-4a00-9336-92d89fd04884' before making global git config changes
+2026-08-11T20:00:13.6367546Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-11T20:00:13.6371836Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/findsnet/findsnet
+2026-08-11T20:00:13.6409350Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-11T20:00:13.6441807Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-11T20:00:13.6680073Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-11T20:00:13.6707492Z http.https://github.com/.extraheader
+2026-08-11T20:00:13.6717265Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-08-11T20:00:13.6750716Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"

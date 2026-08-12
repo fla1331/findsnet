@@ -1,0 +1,14 @@
+﻿2026-08-11T20:00:13.4825512Z ##[group]Run echo "OPENROUTER_API_KEY=***" >> $GITHUB_ENV
+2026-08-11T20:00:13.4826360Z [36;1mecho "OPENROUTER_API_KEY=***" >> $GITHUB_ENV[0m
+2026-08-11T20:00:13.4826911Z [36;1mecho "UNSPLASH_API_KEY=***" >> $GITHUB_ENV[0m
+2026-08-11T20:00:13.4827709Z [36;1mecho "PEXELS_API_KEY=***" >> $GITHUB_ENV[0m
+2026-08-11T20:00:13.4828141Z [36;1mecho "PIXABAY_API_KEY=***" >> $GITHUB_ENV[0m
+2026-08-11T20:00:13.4876118Z shell: /usr/bin/bash -e {0}
+2026-08-11T20:00:13.4876388Z env:
+2026-08-11T20:00:13.4876669Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-08-11T20:00:13.4877120Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-08-11T20:00:13.4877568Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-08-11T20:00:13.4877965Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-08-11T20:00:13.4878349Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-08-11T20:00:13.4878734Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-08-11T20:00:13.4879123Z ##[endgroup]

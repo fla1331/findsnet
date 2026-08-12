@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{NOME_SITE}} - Los Mejores Chollos de Internet</title>
+  <meta name="description" content="Los mejores chollos de internet en un solo lugar. Productos seleccionados a precio de oferta en electrónica, hogar, moda, belleza, kids y ofertas." />
+  <link rel="canonical" href="https://example.com/es/index.html" />
+  <link rel="alternate" hreflang="pt" href="https://example.com/pt/index.html" />
+  <link rel="alternate" hreflang="en" href="https://example.com/en/index.html" />
+  <link rel="alternate" hreflang="es" href="https://example.com/es/index.html" />
+  <link rel="alternate" hreflang="x-default" href="https://example.com/pt/index.html" />
+  <meta property="og:title" content="{{NOME_SITE}} - Los Mejores Chollos" />
+  <meta property="og:description" content="Los mejores chollos de internet en un solo lugar." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="../assets/img/og-default.jpg" />
+  <meta property="og:locale" content="es_ES" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/custom.css" />
+  <script>
+    (function(){try{var t=localStorage.getItem('finds-blog-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">{{ICONE}}</span>
+        <span>{{NOME_SITE}}</span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="index.html" class="active">Inicio</a></li>
+          <li><a href="categoria.html?cat=eletronicos">Electrónicos</a></li>
+          <li><a href="categoria.html?cat=casa">Hogar</a></li>
+          <li><a href="categoria.html?cat=moda">Moda</a></li>
+          <li><a href="categoria.html?cat=beleza">Belleza</a></li>
+          <li><a href="categoria.html?cat=kids">Kids</a></li>
+          <li><a href="categoria.html?cat=promocoes">Ofertas</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-selector">
+          <button class="lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="Seleccionar idioma">
+            <span class="lang-flag">🇪🇸</span><span>ES</span><i class="fa-solid fa-chevron-down" style="font-size:0.7rem"></i>
+          </button>
+          <div class="lang-dropdown" role="menu">
+            <a href="../pt/index.html" role="menuitem"><span class="lang-flag">🇧🇷</span> Português</a>
+            <a href="../en/index.html" role="menuitem"><span class="lang-flag">🇬🇧</span> English</a>
+            <a href="index.html" role="menuitem"><span class="lang-flag">🇪🇸</span> Español</a>
+          </div>
+        </div>
+        <button class="theme-toggle" aria-label="Cambiar tema claro/oscuro">
+          <i class="fa-solid fa-sun icon-sun"></i>
+          <i class="fa-solid fa-moon icon-moon"></i>
+        </button>
+        <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main-content">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>{{FRASE_HERO}}</h1>
+        <p>{{SLOGAN}}</p>
+        <a href="{{PRIMEIRO_ARTIGO}}" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-tags"></i> Ver todos los artículos
+        </a>
+      </div>
+    </section>
+
+    <!-- MAIN LAYOUT -->
+    <div class="container section">
+      <div class="layout-with-sidebar">
+        <div>
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Últimos Artículos</h2>
+              <p class="section-subtitle">Los mejores chollos y ofertas seleccionados para ti</p>
+            </div>
+          </div>
+          <div class="card-grid">
+            {{LISTA_CARDS}}
+          </div>
+
+          {{NAVEGACAO}}
+
+          <!-- Newsletter -->
+          <section class="newsletter reveal">
+            <h2>Recibe los mejores chollos</h2>
+            <p>Suscríbete a nuestra newsletter y recibe las mejores ofertas y chollos directamente en tu email.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('input').placeholder='¡Suscripción realizada!';">
+              <input type="email" placeholder="tu@email.com" aria-label="Email" required />
+              <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Suscribir</button>
+            </form>
+            <p class="newsletter-fallback">Sin spam. Cancela cuando quieras.</p>
+          </section>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" aria-label="Barra lateral">
+          <div class="sidebar-widget reveal">
+            <h3>Artículos Relacionados</h3>
+            <ul class="related-list">
+              {{RELACIONADOS_SIDEBAR}}
+            </ul>
+          </div>
+          <div class="sidebar-widget reveal">
+            <h3>Categorías</h3>
+            <ul class="category-list">
+              {{CATEGORIAS_SIDEBAR}}
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>{{ICONE}} {{NOME_SITE}}</h3>
+          <p>Los mejores chollos de internet en un solo lugar. Productos seleccionados a precio de oferta.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="sobre.html">Acerca de</a></li>
+            <li><a href="contato.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="politica-de-privacidade.html">Privacidad</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Idiomas</h4>
+          <ul>
+            <li><a href="../pt/index.html">🇧🇷 Português</a></li>
+            <li><a href="../en/index.html">🇬🇧 English</a></li>
+            <li><a href="index.html">🇪🇸 Español</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ANO}} {{NOME_SITE}}. Todos los derechos reservados.</p>
+        <p>Hecho con <i class="fa-solid fa-heart" style="color:#E8510F"></i> para cazadores de ofertas</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" role="dialog" aria-label="Aviso de cookies">
+    <div class="cookie-inner">
+      <p class="cookie-text">Usamos cookies para mejorar tu experiencia. Más información en nuestra <a href="cookies.html">Política de Cookies</a>.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost btn-sm cookie-customize">Personalizar</button>
+        <button class="btn btn-ghost btn-sm cookie-reject">Rechazar</button>
+        <button class="btn btn-primary btn-sm cookie-accept">Aceptar todos</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>

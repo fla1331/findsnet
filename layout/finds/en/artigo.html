@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{TITULO}} - {{NOME_SITE}}</title>
+  <meta name="description" content="{{TITULO}}" />
+  <link rel="canonical" href="https://example.com/en/artigo.html" />
+  <link rel="alternate" hreflang="pt" href="https://example.com/pt/artigo.html" />
+  <link rel="alternate" hreflang="en" href="https://example.com/en/artigo.html" />
+  <link rel="alternate" hreflang="es" href="https://example.com/es/artigo.html" />
+  <meta property="og:title" content="{{TITULO}}" />
+  <meta property="og:description" content="{{TITULO}} - Find and deal" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="{{IMAGEM}}" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{TITULO}}" />
+  <meta name="twitter:image" content="{{IMAGEM}}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/custom.css" />
+  <script>
+    (function(){try{var t=localStorage.getItem('finds-blog-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">{{ICONE}}</span>
+        <span>{{NOME_SITE}}</span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="categoria.html?cat=eletronicos">Electronics</a></li>
+          <li><a href="categoria.html?cat=casa">Home</a></li>
+          <li><a href="categoria.html?cat=moda">Fashion</a></li>
+          <li><a href="categoria.html?cat=beleza">Beauty</a></li>
+          <li><a href="categoria.html?cat=kids">Kids</a></li>
+          <li><a href="categoria.html?cat=promocoes">Deals</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-selector">
+          <button class="lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="Select language">
+            <span class="lang-flag">🇬🇧</span><span>EN</span><i class="fa-solid fa-chevron-down" style="font-size:0.7rem"></i>
+          </button>
+          <div class="lang-dropdown" role="menu">
+            <a href="../pt/artigo.html" role="menuitem"><span class="lang-flag">🇧🇷</span> Português</a>
+            <a href="artigo.html" role="menuitem"><span class="lang-flag">🇬🇧</span> English</a>
+            <a href="../es/artigo.html" role="menuitem"><span class="lang-flag">🇪🇸</span> Español</a>
+          </div>
+        </div>
+        <button class="theme-toggle" aria-label="Toggle light/dark theme">
+          <i class="fa-solid fa-sun icon-sun"></i>
+          <i class="fa-solid fa-moon icon-moon"></i>
+        </button>
+        <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main-content">
+    <div class="container">
+      <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="categoria.html">{{CATEGORIA}}</a></li>
+          <li class="current">{{TITULO}}</li>
+        </ol>
+      </nav>
+
+      <article>
+        <header class="article-header">
+          <span class="card-badge">{{CATEGORIA}}</span>
+          <h1 class="article-title">{{TITULO}}</h1>
+          <div class="article-meta">
+            <span class="meta-item">
+              <img src="https://i.pravatar.cc/80?img=1" alt="" class="author-avatar" />
+              <span>{{AUTOR}}</span>
+            </span>
+            <span class="meta-item"><i class="fa-regular fa-calendar"></i> {{DATA}}</span>
+            <span class="meta-item"><i class="fa-regular fa-folder"></i> {{CATEGORIA}}</span>
+            <span class="meta-item"><i class="fa-regular fa-clock"></i> 8 min read</span>
+          </div>
+        </header>
+
+        <img src="{{IMAGEM}}" alt="{{TITULO}}" class="article-hero-image" loading="lazy" />
+        <p class="image-caption">Image: {{TITULO}}</p>
+
+        <div class="article-body">
+          {{CONTEUDO}}
+        </div>
+
+        <!-- CTA Box -->
+        <div class="cta-box reveal">
+          <h3>Get yours now</h3>
+          <p>Take advantage of this special offer while supplies last. Buy with security and peace of mind.</p>
+          <a href="{{LINK_AFILIADO}}" class="btn btn-primary btn-lg" target="_blank" rel="noopener sponsored">
+            <i class="fa-solid fa-tag"></i> View Offer
+          </a>
+          <div class="trust-seal">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Secure purchase guaranteed</span>
+          </div>
+        </div>
+
+        <!-- Share -->
+        <div class="share-section">
+          <span class="share-label">Share:</span>
+          <div class="share-buttons">
+            <a href="#" class="share-btn whatsapp" data-share="whatsapp" data-title="{{TITULO}}" aria-label="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="#" class="share-btn facebook" data-share="facebook" aria-label="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="share-btn twitter" data-share="twitter" data-title="{{TITULO}}" aria-label="Share on Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="share-btn linkedin" data-share="linkedin" aria-label="Share on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Related Articles -->
+      <section class="section">
+        <h2 class="section-title">Related Posts</h2>
+        <p class="section-subtitle">Keep discovering the best finds</p>
+        <div class="card-grid">
+          {{RELACIONADOS}}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>{{ICONE}} {{NOME_SITE}}</h3>
+          <p>The best internet finds in one place. Selected products at deal prices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sobre.html">About</a></li>
+            <li><a href="contato.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="politica-de-privacidade.html">Privacy</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Languages</h4>
+          <ul>
+            <li><a href="../pt/index.html">🇧🇷 Português</a></li>
+            <li><a href="index.html">🇬🇧 English</a></li>
+            <li><a href="../es/index.html">🇪🇸 Español</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ANO}} {{NOME_SITE}}. All rights reserved.</p>
+        <p>Made with <i class="fa-solid fa-heart" style="color:#E8510F"></i> for deal hunters</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" role="dialog" aria-label="Cookie notice">
+    <div class="cookie-inner">
+      <p class="cookie-text">We use cookies to improve your experience. Learn more in our <a href="cookies.html">Cookie Policy</a>.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost btn-sm cookie-customize">Customize</button>
+        <button class="btn btn-ghost btn-sm cookie-reject">Reject</button>
+        <button class="btn btn-primary btn-sm cookie-accept">Accept all</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acerca de Nosotros - {{NOME_SITE}}</title>
+  <meta name="description" content="Conoce al equipo y la misión detrás de {{NOME_SITE}}." />
+  <link rel="canonical" href="https://example.com/es/sobre.html" />
+  <link rel="alternate" hreflang="pt" href="https://example.com/pt/sobre.html" />
+  <link rel="alternate" hreflang="en" href="https://example.com/en/sobre.html" />
+  <link rel="alternate" hreflang="es" href="https://example.com/es/sobre.html" />
+  <meta property="og:title" content="Acerca de Nosotros - {{NOME_SITE}}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="../assets/img/og-default.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/custom.css" />
+  <script>
+    (function(){try{var t=localStorage.getItem('finds-blog-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">{{ICONE}}</span>
+        <span>{{NOME_SITE}}</span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="categoria.html?cat=eletronicos">Electrónicos</a></li>
+          <li><a href="categoria.html?cat=casa">Hogar</a></li>
+          <li><a href="categoria.html?cat=moda">Moda</a></li>
+          <li><a href="categoria.html?cat=beleza">Belleza</a></li>
+          <li><a href="categoria.html?cat=kids">Kids</a></li>
+          <li><a href="categoria.html?cat=promocoes">Ofertas</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-selector">
+          <button class="lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="Seleccionar idioma">
+            <span class="lang-flag">🇪🇸</span><span>ES</span><i class="fa-solid fa-chevron-down" style="font-size:0.7rem"></i>
+          </button>
+          <div class="lang-dropdown" role="menu">
+            <a href="../pt/sobre.html" role="menuitem"><span class="lang-flag">🇧🇷</span> Português</a>
+            <a href="../en/sobre.html" role="menuitem"><span class="lang-flag">🇬🇧</span> English</a>
+            <a href="sobre.html" role="menuitem"><span class="lang-flag">🇪🇸</span> Español</a>
+          </div>
+        </div>
+        <button class="theme-toggle" aria-label="Cambiar tema claro/oscuro">
+          <i class="fa-solid fa-sun icon-sun"></i>
+          <i class="fa-solid fa-moon icon-moon"></i>
+        </button>
+        <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main-content">
+    <section class="about-hero">
+      <div class="container">
+        <h1>Acerca de {{NOME_SITE}}</h1>
+        <p>{{DESCRICAO}}</p>
+      </div>
+    </section>
+
+    <section class="container section">
+      <div class="article-body" style="max-width:760px;margin:0 auto;">
+        <h2>Quiénes Somos</h2>
+        <p>Somos un equipo apasionado por encontrar los mejores productos con los mejores precios de internet. Cada día, buscamos, probamos y seleccionamos los chollos más increíbles para compartir contigo. Creemos que comprar bien no significa gastar mucho — sino encontrar productos de calidad a precios justos, aprovechando las mejores ofertas disponibles.</p>
+
+        <h2>Misión, Visión y Valores</h2>
+        <div class="values-grid">
+          <div class="value-card reveal">
+            <div class="value-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <h3>Misión</h3>
+            <p>Ayudar a nuestros lectores a encontrar productos de calidad sin gastar de más, seleccionando las mejores ofertas y chollos de internet.</p>
+          </div>
+          <div class="value-card reveal">
+            <div class="value-icon"><i class="fa-solid fa-eye"></i></div>
+            <h3>Visión</h3>
+            <p>Ser la referencia en chollos y ofertas en lengua española, reconocida por la curaduría de calidad y por ayudar a miles de personas a ahorrar.</p>
+          </div>
+          <div class="value-card reveal">
+            <div class="value-icon"><i class="fa-solid fa-heart"></i></div>
+            <h3>Valores</h3>
+            <p>Honestidad, transparencia sobre enlaces de afiliados, curaduría cuidadosa y compromiso de traer solo productos que realmente valgan la pena.</p>
+          </div>
+        </div>
+
+        <h2>Nuestro Equipo</h2>
+        <div class="team-grid">
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=1" alt="Foto de Ana Silva" loading="lazy" />
+            <div class="team-info">
+              <h3>Ana Silva</h3>
+              <p class="team-role">Editora jefe</p>
+            </div>
+          </div>
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=12" alt="Foto de Carlos Mendes" loading="lazy" />
+            <div class="team-info">
+              <h3>Carlos Mendes</h3>
+              <p class="team-role">Cazador de ofertas</p>
+            </div>
+          </div>
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=5" alt="Foto de Beatriz Costa" loading="lazy" />
+            <div class="team-info">
+              <h3>Beatriz Costa</h3>
+              <p class="team-role">Redactora de reviews</p>
+            </div>
+          </div>
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=15" alt="Foto de Diego Santos" loading="lazy" />
+            <div class="team-info">
+              <h3>Diego Santos</h3>
+              <p class="team-role">Especialista en productos</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Por Qué Confiar en Nosotros</h2>
+        <ul>
+          <li>Cada producto es investigado y evaluado antes de ser recomendado</li>
+          <li>Comparamos precios en varias tiendas para garantizar la mejor oferta</li>
+          <li>Transparencia total sobre enlaces de afiliados y colaboraciones</li>
+          <li>Actualizamos las ofertas regularmente para que no pierdas ninguna oportunidad</li>
+          <li>Nuestro equipo prueba y revisa los productos para reseñas honestas</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>{{ICONE}} {{NOME_SITE}}</h3>
+          <p>Los mejores chollos de internet en un solo lugar. Productos seleccionados a precio de oferta.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="sobre.html">Acerca de</a></li>
+            <li><a href="contato.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="politica-de-privacidade.html">Privacidad</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Idiomas</h4>
+          <ul>
+            <li><a href="../pt/index.html">🇧🇷 Português</a></li>
+            <li><a href="../en/index.html">🇬🇧 English</a></li>
+            <li><a href="index.html">🇪🇸 Español</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ANO}} {{NOME_SITE}}. Todos los derechos reservados.</p>
+        <p>Hecho con <i class="fa-solid fa-heart" style="color:#E8510F"></i> para cazadores de ofertas</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" role="dialog" aria-label="Aviso de cookies">
+    <div class="cookie-inner">
+      <p class="cookie-text">Usamos cookies para mejorar tu experiencia. Más información en nuestra <a href="cookies.html">Política de Cookies</a>.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost btn-sm cookie-customize">Personalizar</button>
+        <button class="btn btn-ghost btn-sm cookie-reject">Rechazar</button>
+        <button class="btn btn-primary btn-sm cookie-accept">Aceptar todos</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>

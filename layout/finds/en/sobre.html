@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us - {{NOME_SITE}}</title>
+  <meta name="description" content="Meet the team and mission behind {{NOME_SITE}}." />
+  <link rel="canonical" href="https://example.com/en/sobre.html" />
+  <link rel="alternate" hreflang="pt" href="https://example.com/pt/sobre.html" />
+  <link rel="alternate" hreflang="en" href="https://example.com/en/sobre.html" />
+  <link rel="alternate" hreflang="es" href="https://example.com/es/sobre.html" />
+  <meta property="og:title" content="About Us - {{NOME_SITE}}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="../assets/img/og-default.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/custom.css" />
+  <script>
+    (function(){try{var t=localStorage.getItem('finds-blog-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">{{ICONE}}</span>
+        <span>{{NOME_SITE}}</span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="categoria.html?cat=eletronicos">Electronics</a></li>
+          <li><a href="categoria.html?cat=casa">Home</a></li>
+          <li><a href="categoria.html?cat=moda">Fashion</a></li>
+          <li><a href="categoria.html?cat=beleza">Beauty</a></li>
+          <li><a href="categoria.html?cat=kids">Kids</a></li>
+          <li><a href="categoria.html?cat=promocoes">Deals</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-selector">
+          <button class="lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="Select language">
+            <span class="lang-flag">🇬🇧</span><span>EN</span><i class="fa-solid fa-chevron-down" style="font-size:0.7rem"></i>
+          </button>
+          <div class="lang-dropdown" role="menu">
+            <a href="../pt/sobre.html" role="menuitem"><span class="lang-flag">🇧🇷</span> Português</a>
+            <a href="sobre.html" role="menuitem"><span class="lang-flag">🇬🇧</span> English</a>
+            <a href="../es/sobre.html" role="menuitem"><span class="lang-flag">🇪🇸</span> Español</a>
+          </div>
+        </div>
+        <button class="theme-toggle" aria-label="Toggle light/dark theme">
+          <i class="fa-solid fa-sun icon-sun"></i>
+          <i class="fa-solid fa-moon icon-moon"></i>
+        </button>
+        <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main-content">
+    <section class="about-hero">
+      <div class="container">
+        <h1>About {{NOME_SITE}}</h1>
+        <p>{{DESCRICAO}}</p>
+      </div>
+    </section>
+
+    <section class="container section">
+      <div class="article-body" style="max-width:760px;margin:0 auto;">
+        <h2>Who We Are</h2>
+        <p>We are a team passionate about finding the best products at the best prices on the internet. Every day, we search, test, and select the most incredible finds to share with you. We believe that buying well doesn't mean spending a lot — it means finding quality products at fair prices, taking advantage of the best deals available.</p>
+
+        <h2>Mission, Vision and Values</h2>
+        <div class="values-grid">
+          <div class="value-card reveal">
+            <div class="value-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <h3>Mission</h3>
+            <p>Help our readers find quality products without overspending, selecting the best deals and finds on the internet.</p>
+          </div>
+          <div class="value-card reveal">
+            <div class="value-icon"><i class="fa-solid fa-eye"></i></div>
+            <h3>Vision</h3>
+            <p>Be the go-to reference for finds and deals in English, recognized for quality curation and helping thousands of people save money.</p>
+          </div>
+          <div class="value-card reveal">
+            <div class="value-icon"><i class="fa-solid fa-heart"></i></div>
+            <h3>Values</h3>
+            <p>Honesty, transparency about affiliate links, careful curation, and a commitment to bringing only products that are truly worth it.</p>
+          </div>
+        </div>
+
+        <h2>Our Team</h2>
+        <div class="team-grid">
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=1" alt="Photo of Ana Silva" loading="lazy" />
+            <div class="team-info">
+              <h3>Ana Silva</h3>
+              <p class="team-role">Editor-in-chief</p>
+            </div>
+          </div>
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=12" alt="Photo of Carlos Mendes" loading="lazy" />
+            <div class="team-info">
+              <h3>Carlos Mendes</h3>
+              <p class="team-role">Deal hunter</p>
+            </div>
+          </div>
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=5" alt="Photo of Beatriz Costa" loading="lazy" />
+            <div class="team-info">
+              <h3>Beatriz Costa</h3>
+              <p class="team-role">Reviews writer</p>
+            </div>
+          </div>
+          <div class="team-card reveal">
+            <img src="https://i.pravatar.cc/300?img=15" alt="Photo of Diego Santos" loading="lazy" />
+            <div class="team-info">
+              <h3>Diego Santos</h3>
+              <p class="team-role">Product specialist</p>
+            </div>
+          </div>
+        </div>
+
+        <h2>Why Trust Us</h2>
+        <ul>
+          <li>Every product is researched and evaluated before being recommended</li>
+          <li>We compare prices across multiple stores to guarantee the best deal</li>
+          <li>Full transparency about affiliate links and partnerships</li>
+          <li>We update deals regularly so you never miss an opportunity</li>
+          <li>Our team tests and reviews products for honest recommendations</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>{{ICONE}} {{NOME_SITE}}</h3>
+          <p>The best internet finds in one place. Selected products at deal prices.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sobre.html">About</a></li>
+            <li><a href="contato.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="politica-de-privacidade.html">Privacy</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Languages</h4>
+          <ul>
+            <li><a href="../pt/index.html">🇧🇷 Português</a></li>
+            <li><a href="index.html">🇬🇧 English</a></li>
+            <li><a href="../es/index.html">🇪🇸 Español</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ANO}} {{NOME_SITE}}. All rights reserved.</p>
+        <p>Made with <i class="fa-solid fa-heart" style="color:#E8510F"></i> for deal hunters</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cookie-banner" role="dialog" aria-label="Cookie notice">
+    <div class="cookie-inner">
+      <p class="cookie-text">We use cookies to improve your experience. Learn more in our <a href="cookies.html">Cookie Policy</a>.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost btn-sm cookie-customize">Customize</button>
+        <button class="btn btn-ghost btn-sm cookie-reject">Reject</button>
+        <button class="btn btn-primary btn-sm cookie-accept">Accept all</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>

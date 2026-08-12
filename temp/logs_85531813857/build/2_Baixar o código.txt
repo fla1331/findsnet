@@ -1,0 +1,172 @@
+﻿2026-08-11T20:00:10.3776870Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-08-11T20:00:10.3786155Z ##[group]Run actions/checkout@v3
+2026-08-11T20:00:10.3786960Z with:
+2026-08-11T20:00:10.3787447Z   repository: fla1331/findsnet
+2026-08-11T20:00:10.3791531Z   token: ***
+2026-08-11T20:00:10.3792040Z   ssh-strict: true
+2026-08-11T20:00:10.3792557Z   persist-credentials: true
+2026-08-11T20:00:10.3793084Z   clean: true
+2026-08-11T20:00:10.3793587Z   sparse-checkout-cone-mode: true
+2026-08-11T20:00:10.3794246Z   fetch-depth: 1
+2026-08-11T20:00:10.3794979Z   fetch-tags: false
+2026-08-11T20:00:10.3795492Z   lfs: false
+2026-08-11T20:00:10.3795950Z   submodules: false
+2026-08-11T20:00:10.3796442Z   set-safe-directory: true
+2026-08-11T20:00:10.3796995Z   allow-unsafe-pr-checkout: false
+2026-08-11T20:00:10.3797913Z ##[endgroup]
+2026-08-11T20:00:10.4639145Z (node:2125) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-08-11T20:00:10.4640685Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-08-11T20:00:10.4732019Z Syncing repository: fla1331/findsnet
+2026-08-11T20:00:10.4734439Z ##[group]Getting Git version info
+2026-08-11T20:00:10.4735528Z Working directory is '/home/runner/work/findsnet/findsnet'
+2026-08-11T20:00:10.4737149Z [command]/usr/bin/git version
+2026-08-11T20:00:10.4795354Z git version 2.54.0
+2026-08-11T20:00:10.4819505Z ##[endgroup]
+2026-08-11T20:00:10.4836018Z Temporarily overriding HOME='/home/runner/work/_temp/d2a9ef86-4f57-458e-883e-89c4fd882405' before making global git config changes
+2026-08-11T20:00:10.4837515Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-11T20:00:10.4840618Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/findsnet/findsnet
+2026-08-11T20:00:10.4895496Z Deleting the contents of '/home/runner/work/findsnet/findsnet'
+2026-08-11T20:00:10.4900559Z ##[group]Initializing the repository
+2026-08-11T20:00:10.4905390Z [command]/usr/bin/git init /home/runner/work/findsnet/findsnet
+2026-08-11T20:00:10.5018195Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-11T20:00:10.5019785Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-11T20:00:10.5020940Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-11T20:00:10.5022198Z hint: call:
+2026-08-11T20:00:10.5022754Z hint:
+2026-08-11T20:00:10.5023646Z hint: 	git config --global init.defaultBranch <name>
+2026-08-11T20:00:10.5024623Z hint:
+2026-08-11T20:00:10.5025585Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-11T20:00:10.5026649Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-11T20:00:10.5027521Z hint:
+2026-08-11T20:00:10.5028010Z hint: 	git branch -m <name>
+2026-08-11T20:00:10.5028568Z hint:
+2026-08-11T20:00:10.5029271Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-11T20:00:10.5030713Z Initialized empty Git repository in /home/runner/work/findsnet/findsnet/.git/
+2026-08-11T20:00:10.5035649Z [command]/usr/bin/git remote add origin https://github.com/fla1331/findsnet
+2026-08-11T20:00:10.5080170Z ##[endgroup]
+2026-08-11T20:00:10.5081048Z ##[group]Disabling automatic garbage collection
+2026-08-11T20:00:10.5083584Z [command]/usr/bin/git config --local gc.auto 0
+2026-08-11T20:00:10.5114231Z ##[endgroup]
+2026-08-11T20:00:10.5115887Z ##[group]Setting up auth
+2026-08-11T20:00:10.5121186Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-11T20:00:10.5159729Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-11T20:00:10.5534650Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-11T20:00:10.5576237Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-11T20:00:10.5845489Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-11T20:00:10.5889997Z ##[endgroup]
+2026-08-11T20:00:10.5891836Z ##[group]Fetching the repository
+2026-08-11T20:00:10.5900399Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +d010a3109ce3b1997559cbd6df84a483c5e448b5:refs/remotes/origin/main
+2026-08-11T20:00:10.7981470Z remote: Enumerating objects: 58, done.        
+2026-08-11T20:00:10.7983027Z remote: Counting objects:   1% (1/58)        
+2026-08-11T20:00:10.7983941Z remote: Counting objects:   3% (2/58)        
+2026-08-11T20:00:10.7985044Z remote: Counting objects:   5% (3/58)        
+2026-08-11T20:00:10.7985893Z remote: Counting objects:   6% (4/58)        
+2026-08-11T20:00:10.7986679Z remote: Counting objects:   8% (5/58)        
+2026-08-11T20:00:10.7987450Z remote: Counting objects:  10% (6/58)        
+2026-08-11T20:00:10.7988242Z remote: Counting objects:  12% (7/58)        
+2026-08-11T20:00:10.7989023Z remote: Counting objects:  13% (8/58)        
+2026-08-11T20:00:10.7989795Z remote: Counting objects:  15% (9/58)        
+2026-08-11T20:00:10.7990617Z remote: Counting objects:  17% (10/58)        
+2026-08-11T20:00:10.7991728Z remote: Counting objects:  18% (11/58)        
+2026-08-11T20:00:10.7993211Z remote: Counting objects:  20% (12/58)        
+2026-08-11T20:00:10.7994571Z remote: Counting objects:  22% (13/58)        
+2026-08-11T20:00:10.7996454Z remote: Counting objects:  24% (14/58)        
+2026-08-11T20:00:10.7998008Z remote: Counting objects:  25% (15/58)        
+2026-08-11T20:00:10.7998861Z remote: Counting objects:  27% (16/58)        
+2026-08-11T20:00:10.7999952Z remote: Counting objects:  29% (17/58)        
+2026-08-11T20:00:10.8000672Z remote: Counting objects:  31% (18/58)        
+2026-08-11T20:00:10.8001354Z remote: Counting objects:  32% (19/58)        
+2026-08-11T20:00:10.8002045Z remote: Counting objects:  34% (20/58)        
+2026-08-11T20:00:10.8002939Z remote: Counting objects:  36% (21/58)        
+2026-08-11T20:00:10.8004355Z remote: Counting objects:  37% (22/58)        
+2026-08-11T20:00:10.8005480Z remote: Counting objects:  39% (23/58)        
+2026-08-11T20:00:10.8006225Z remote: Counting objects:  41% (24/58)        
+2026-08-11T20:00:10.8006934Z remote: Counting objects:  43% (25/58)        
+2026-08-11T20:00:10.8007673Z remote: Counting objects:  44% (26/58)        
+2026-08-11T20:00:10.8008364Z remote: Counting objects:  46% (27/58)        
+2026-08-11T20:00:10.8009077Z remote: Counting objects:  48% (28/58)        
+2026-08-11T20:00:10.8010134Z remote: Counting objects:  50% (29/58)        
+2026-08-11T20:00:10.8010930Z remote: Counting objects:  51% (30/58)        
+2026-08-11T20:00:10.8011640Z remote: Counting objects:  53% (31/58)        
+2026-08-11T20:00:10.8012610Z remote: Counting objects:  55% (32/58)        
+2026-08-11T20:00:10.8013491Z remote: Counting objects:  56% (33/58)        
+2026-08-11T20:00:10.8014199Z remote: Counting objects:  58% (34/58)        
+2026-08-11T20:00:10.8015961Z remote: Counting objects:  60% (35/58)        
+2026-08-11T20:00:10.8017418Z remote: Counting objects:  62% (36/58)        
+2026-08-11T20:00:10.8018696Z remote: Counting objects:  63% (37/58)        
+2026-08-11T20:00:10.8020014Z remote: Counting objects:  65% (38/58)        
+2026-08-11T20:00:10.8021106Z remote: Counting objects:  67% (39/58)        
+2026-08-11T20:00:10.8021835Z remote: Counting objects:  68% (40/58)        
+2026-08-11T20:00:10.8022544Z remote: Counting objects:  70% (41/58)        
+2026-08-11T20:00:10.8023234Z remote: Counting objects:  72% (42/58)        
+2026-08-11T20:00:10.8024306Z remote: Counting objects:  74% (43/58)        
+2026-08-11T20:00:10.8025419Z remote: Counting objects:  75% (44/58)        
+2026-08-11T20:00:10.8026431Z remote: Counting objects:  77% (45/58)        
+2026-08-11T20:00:10.8027191Z remote: Counting objects:  79% (46/58)        
+2026-08-11T20:00:10.8027928Z remote: Counting objects:  81% (47/58)        
+2026-08-11T20:00:10.8028660Z remote: Counting objects:  82% (48/58)        
+2026-08-11T20:00:10.8029392Z remote: Counting objects:  84% (49/58)        
+2026-08-11T20:00:10.8030100Z remote: Counting objects:  86% (50/58)        
+2026-08-11T20:00:10.8030773Z remote: Counting objects:  87% (51/58)        
+2026-08-11T20:00:10.8031435Z remote: Counting objects:  89% (52/58)        
+2026-08-11T20:00:10.8032070Z remote: Counting objects:  91% (53/58)        
+2026-08-11T20:00:10.8032690Z remote: Counting objects:  93% (54/58)        
+2026-08-11T20:00:10.8033333Z remote: Counting objects:  94% (55/58)        
+2026-08-11T20:00:10.8034009Z remote: Counting objects:  96% (56/58)        
+2026-08-11T20:00:10.8034657Z remote: Counting objects:  98% (57/58)        
+2026-08-11T20:00:10.8035628Z remote: Counting objects: 100% (58/58)        
+2026-08-11T20:00:10.8036292Z remote: Counting objects: 100% (58/58), done.        
+2026-08-11T20:00:10.8036975Z remote: Compressing objects:   2% (1/40)        
+2026-08-11T20:00:10.8037888Z remote: Compressing objects:   5% (2/40)        
+2026-08-11T20:00:10.8039268Z remote: Compressing objects:   7% (3/40)        
+2026-08-11T20:00:10.8040479Z remote: Compressing objects:  10% (4/40)        
+2026-08-11T20:00:10.8041643Z remote: Compressing objects:  12% (5/40)        
+2026-08-11T20:00:10.8042718Z remote: Compressing objects:  15% (6/40)        
+2026-08-11T20:00:10.8044023Z remote: Compressing objects:  17% (7/40)        
+2026-08-11T20:00:10.8045276Z remote: Compressing objects:  20% (8/40)        
+2026-08-11T20:00:10.8046303Z remote: Compressing objects:  22% (9/40)        
+2026-08-11T20:00:10.8047513Z remote: Compressing objects:  25% (10/40)        
+2026-08-11T20:00:10.8048894Z remote: Compressing objects:  27% (11/40)        
+2026-08-11T20:00:10.8050243Z remote: Compressing objects:  30% (12/40)        
+2026-08-11T20:00:10.8051395Z remote: Compressing objects:  32% (13/40)        
+2026-08-11T20:00:10.8052738Z remote: Compressing objects:  35% (14/40)        
+2026-08-11T20:00:10.8053870Z remote: Compressing objects:  37% (15/40)        
+2026-08-11T20:00:10.8055461Z remote: Compressing objects:  40% (16/40)        
+2026-08-11T20:00:10.8056588Z remote: Compressing objects:  42% (17/40)        
+2026-08-11T20:00:10.8057704Z remote: Compressing objects:  45% (18/40)        
+2026-08-11T20:00:10.8058835Z remote: Compressing objects:  47% (19/40)        
+2026-08-11T20:00:10.8059977Z remote: Compressing objects:  50% (20/40)        
+2026-08-11T20:00:10.8061077Z remote: Compressing objects:  52% (21/40)        
+2026-08-11T20:00:10.8062189Z remote: Compressing objects:  55% (22/40)        
+2026-08-11T20:00:10.8063303Z remote: Compressing objects:  57% (23/40)        
+2026-08-11T20:00:10.8064615Z remote: Compressing objects:  60% (24/40)        
+2026-08-11T20:00:10.8066136Z remote: Compressing objects:  62% (25/40)        
+2026-08-11T20:00:10.8067464Z remote: Compressing objects:  65% (26/40)        
+2026-08-11T20:00:10.8068767Z remote: Compressing objects:  67% (27/40)        
+2026-08-11T20:00:10.8070008Z remote: Compressing objects:  70% (28/40)        
+2026-08-11T20:00:10.8070894Z remote: Compressing objects:  72% (29/40)        
+2026-08-11T20:00:10.8071728Z remote: Compressing objects:  75% (30/40)        
+2026-08-11T20:00:10.8072577Z remote: Compressing objects:  77% (31/40)        
+2026-08-11T20:00:10.8073420Z remote: Compressing objects:  80% (32/40)        
+2026-08-11T20:00:10.8074250Z remote: Compressing objects:  82% (33/40)        
+2026-08-11T20:00:10.8075926Z remote: Compressing objects:  85% (34/40)        
+2026-08-11T20:00:10.8077264Z remote: Compressing objects:  87% (35/40)        
+2026-08-11T20:00:10.8078616Z remote: Compressing objects:  90% (36/40)        
+2026-08-11T20:00:10.8079655Z remote: Compressing objects:  92% (37/40)        
+2026-08-11T20:00:10.8080491Z remote: Compressing objects:  95% (38/40)        
+2026-08-11T20:00:10.8081280Z remote: Compressing objects:  97% (39/40)        
+2026-08-11T20:00:10.8082097Z remote: Compressing objects: 100% (40/40)        
+2026-08-11T20:00:10.8082956Z remote: Compressing objects: 100% (40/40), done.        
+2026-08-11T20:00:10.8092889Z remote: Total 58 (delta 15), reused 55 (delta 15), pack-reused 0 (from 0)        
+2026-08-11T20:00:10.8319662Z From https://github.com/fla1331/findsnet
+2026-08-11T20:00:10.8322073Z  * [new ref]         d010a3109ce3b1997559cbd6df84a483c5e448b5 -> origin/main
+2026-08-11T20:00:10.8359338Z ##[endgroup]
+2026-08-11T20:00:10.8360998Z ##[group]Determining the checkout info
+2026-08-11T20:00:10.8362808Z ##[endgroup]
+2026-08-11T20:00:10.8364143Z ##[group]Checking out the ref
+2026-08-11T20:00:10.8366264Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-08-11T20:00:10.8455516Z Switched to a new branch 'main'
+2026-08-11T20:00:10.8458552Z branch 'main' set up to track 'origin/main'.
+2026-08-11T20:00:10.8466174Z ##[endgroup]
+2026-08-11T20:00:10.8506552Z [command]/usr/bin/git log -1 --format='%H'
+2026-08-11T20:00:10.8530296Z 'd010a3109ce3b1997559cbd6df84a483c5e448b5'

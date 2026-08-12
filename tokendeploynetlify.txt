@@ -1,0 +1,9 @@
+nfp_vxgiBAmZdViAYHvjiHtsc3Gye3c5F64v0c0b   =>> TOKEN NETLIFY
+
+1740d152-e257-48ee-8f10-39976efca746  --> PROJECT  ID DO BLOG NO NETLIFY
+
+
+# Testa se o token funciona
+curl -X GET "https://api.netlify.com/api/v1/sites" \
+  -H "Authorization: Bearer nfp_oWmHe1EidViMdcFYkpHgkor3jXknHgBv4db7"
+

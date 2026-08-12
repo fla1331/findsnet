@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {{HEAD}}
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  
+  {{HEADER}}
+
+  <main id="main" class="main-content">
+    <div class="container">
+      <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+          <li><a href="/{{IDIOMA}}/">Home</a></li>
+          <li class="current">Contact</li>
+        </ol>
+      </nav>
+
+      <article class="page-article">
+        <header class="page-header">
+          <h1>Contact</h1>
+          <p class="page-subtitle">Questions, suggestions or corrections</p>
+        </header>
+
+        <div class="page-body">
+          <p>
+            Fill out the form or send an email directly. I'll get back to you as soon as possible.
+          </p>
+
+          <div class="contact-form">
+            <form action="mailto:{{EMAIL_CONTATO}}" method="post" enctype="text/plain">
+              <div class="form-group">
+                <label for="nome">Name</label>
+                <input type="text" id="nome" name="nome" placeholder="Your name" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+              </div>
+              <div class="form-group">
+                <label for="assunto">Subject</label>
+                <input type="text" id="assunto" name="assunto" placeholder="Message subject">
+              </div>
+              <div class="form-group">
+                <label for="mensagem">Message</label>
+                <textarea id="mensagem" name="mensagem" rows="5" placeholder="Write your message here..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Send message</button>
+            </form>
+          </div>
+
+          <hr style="border-color:var(--border);margin:2rem 0;">
+
+          <p>
+            Or if you prefer, send an email directly to:
+            <a href="mailto:{{EMAIL_CONTATO}}">{{EMAIL_CONTATO}}</a>
+          </p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  {{FOOTER}}
+
+  <div class="cookie-banner" role="dialog" aria-label="Cookies notice">
+    <div class="cookie-inner">
+      <p class="cookie-text">We use cookies to improve your experience. Learn more in our <a href="/{{IDIOMA}}/cookies.html">Cookie Policy</a>.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost btn-sm cookie-customize">Customize</button>
+        <button class="btn btn-ghost btn-sm cookie-reject">Reject</button>
+        <button class="btn btn-primary btn-sm cookie-accept">Accept all</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/script.js"></script>
+</body>
+</html>
