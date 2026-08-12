@@ -32,7 +32,7 @@ jobs:
         run: python3 gerador.py --auto
       
       - name: Deploy para Netlify
-        uses: nwtgck/actions-netlify@v2.0
+        uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: './docs'
           production-branch: main
